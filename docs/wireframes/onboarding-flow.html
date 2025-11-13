@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docobo Onboarding Flow - Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Brand Colors */
+      --docobo-blue: #4A90E2;
+      --docobo-navy: #1E3A5F;
+      --success: #43B581;
+      --warning: #F0A020;
+      --error: #F04747;
+      --info: #7289DA;
+
+      /* Discord Colors */
+      --discord-dark: #36393F;
+      --discord-darker: #2C2F33;
+      --discord-darkest: #23272A;
+      --discord-text: #DCDDDE;
+      --discord-text-muted: #99AAB5;
+
+      /* Typography */
+      --font-primary: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+      /* Spacing */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--discord-darkest);
+      color: var(--discord-text);
+      padding: var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .wireframe-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--discord-darker);
+    }
+
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: var(--discord-text-muted);
+    }
+
+    .annotation {
+      background: rgba(74, 144, 226, 0.1);
+      border-left: 3px solid var(--docobo-blue);
+      padding: var(--space-md);
+      margin: var(--space-lg) 0;
+      border-radius: 4px;
+    }
+
+    .annotation-title {
+      font-weight: 600;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .annotation-content {
+      font-size: 14px;
+      color: var(--discord-text);
+      line-height: 1.5;
+    }
+
+    .flow-section {
+      margin-bottom: var(--space-2xl);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+      gap: var(--space-md);
+    }
+
+    .step-number {
+      background: var(--docobo-blue);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .discord-message {
+      background: var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .bot-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--docobo-blue), var(--docobo-navy));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .bot-name {
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .bot-badge {
+      background: var(--docobo-blue);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .embed {
+      border-left: 4px solid var(--docobo-blue);
+      background: var(--discord-dark);
+      border-radius: 4px;
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .embed.success {
+      border-color: var(--success);
+    }
+
+    .embed.warning {
+      border-color: var(--warning);
+    }
+
+    .embed.error {
+      border-color: var(--error);
+    }
+
+    .embed.info {
+      border-color: var(--info);
+    }
+
+    .embed-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-sm);
+    }
+
+    .embed-description {
+      font-size: 14px;
+      color: var(--discord-text);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .embed-field {
+      margin-bottom: var(--space-md);
+    }
+
+    .embed-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .embed-field-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .embed-field-value {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      line-height: 1.5;
+    }
+
+    .embed-footer {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-primary {
+      background: var(--docobo-blue);
+      color: white;
+    }
+
+    .button-secondary {
+      background: #4E5058;
+      color: var(--discord-text);
+    }
+
+    .button-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .button-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .button-link {
+      background: transparent;
+      color: var(--docobo-blue);
+      text-decoration: none;
+      padding: 8px 0;
+    }
+
+    .select-menu {
+      background: var(--discord-dark);
+      border: 1px solid #202225;
+      border-radius: 4px;
+      padding: 12px;
+      width: 100%;
+      color: var(--discord-text-muted);
+      font-family: var(--font-primary);
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: var(--space-sm);
+    }
+
+    .select-menu:hover {
+      border-color: var(--discord-text-muted);
+    }
+
+    .progress-bar {
+      background: var(--discord-dark);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: var(--space-md) 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--docobo-blue), var(--success));
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-xs);
+      text-align: center;
+    }
+
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+
+    .modal {
+      background: var(--discord-darker);
+      border-radius: 4px;
+      padding: var(--space-lg);
+      max-width: 500px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--discord-text);
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--discord-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--discord-darkest);
+      border: 1px solid #202225;
+      border-radius: 4px;
+      padding: 10px;
+      color: var(--discord-text);
+      font-family: var(--font-primary);
+      font-size: 14px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--docobo-blue);
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-xs);
+    }
+
+    .role-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background: rgba(74, 144, 226, 0.2);
+      color: var(--docobo-blue);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-right: var(--space-xs);
+      margin-bottom: var(--space-xs);
+    }
+
+    .code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+      color: var(--discord-text);
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--discord-text-muted);
+      font-size: 24px;
+      margin: var(--space-lg) 0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: var(--space-md);
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .step-title {
+        font-size: 20px;
+      }
+
+      .components {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <div class="header">
+      <h1>🔧 Docobo Onboarding Flow</h1>
+      <p>Progressive disclosure pattern: Server owner setup (3-5 minutes)</p>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📋 Design Rationale</div>
+      <div class="annotation-content">
+        <strong>Key Principles:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li><strong>15-minute rule:</strong> Users engage within first 15 min or abandon (per research)</li>
+          <li><strong>Progressive disclosure:</strong> Max 3 choices per step to minimize cognitive load</li>
+          <li><strong>Clear progress indicators:</strong> Users always know where they are and what's next</li>
+          <li><strong>Immediate validation:</strong> Errors shown inline, don't force re-entry</li>
+          <li><strong>Checkpoint recovery:</strong> Save progress at each completed step</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 1: WELCOME -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Welcome & Context</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">👋 Welcome to Docobo!</div>
+          <div class="embed-description">
+            Let's set up your community monetization. This takes about 3 minutes.
+            <br><br>
+            <strong>We'll configure:</strong><br>
+            1. Which roles to monetize<br>
+            2. Pricing for each role<br>
+            3. Payment methods (Stripe/PayPal)
+          </div>
+          <div class="embed-footer">Ready to start? Click the button below</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">▶️ Start Setup</button>
+          <button class="button button-link">📺 Watch Tutorial (2 min)</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Color:</strong> Docobo Blue (#4A90E2) - Primary brand, establishes trust<br>
+          <strong>Copy:</strong> Clear time commitment (3 minutes) reduces anxiety<br>
+          <strong>Action:</strong> Single primary CTA prevents choice paralysis<br>
+          <strong>Alternative:</strong> Tutorial link for visual learners (non-blocking)
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 2: ROLE SELECTION -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Role Selection</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">📝 Step 1/3: Select Paid Roles</div>
+          <div class="embed-description">
+            Choose which roles members will pay to access. You can select up to 5 roles.
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 33%"></div>
+          </div>
+          <div class="progress-label">Setup progress: 33% complete</div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💡 Recommendation</div>
+            <div class="embed-field-value">
+              Choose roles that unlock exclusive channels or perks. Examples: @Premium Member, @VIP Access, @Early Supporter
+            </div>
+          </div>
+
+          <div class="embed-footer">Select roles from the dropdown below</div>
+        </div>
+
+        <select class="select-menu">
+          <option>Choose roles to monetize... (1-5 roles)</option>
+        </select>
+
+        <div class="components">
+          <button class="button button-primary">Continue</button>
+          <button class="button button-secondary">Back</button>
+          <button class="button button-link">Skip for Now</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Component:</strong> Dynamic role select (auto-populated from server roles)<br>
+          <strong>Constraint:</strong> 1-5 roles to prevent overwhelming complexity<br>
+          <strong>Guidance:</strong> Examples provided to guide decision<br>
+          <strong>Progress:</strong> Visual bar + percentage shows advancement<br>
+          <strong>Navigation:</strong> Back button available (not first step), Skip for later setup
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 3: ROLE SELECTED (Feedback) -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Selection Confirmation</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed success">
+          <div class="embed-title">✅ Roles Selected</div>
+          <div class="embed-description">
+            You've selected 2 roles to monetize:
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">📋 Selected Roles</div>
+            <div class="embed-field-value">
+              <span class="role-tag">💎 @Premium Member</span>
+              <span class="role-tag">⭐ @VIP Access</span>
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">⏭️ Next Step</div>
+            <div class="embed-field-value">
+              Set the price for each role. We'll show you pricing recommendations.
+            </div>
+          </div>
+
+          <div class="embed-footer">Setup progress: 40% complete</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">Continue to Pricing</button>
+          <button class="button button-secondary">Change Roles</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Color:</strong> Success Green (#43B581) - Positive reinforcement<br>
+          <strong>Feedback:</strong> Immediate visual confirmation of selection<br>
+          <strong>Role Tags:</strong> Visual representation with emojis (if role has icon)<br>
+          <strong>Preview:</strong> Shows what was selected before moving forward<br>
+          <strong>Edit Option:</strong> Easy to go back and modify
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 4: PRICING MODAL -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">Pricing Configuration (Modal)</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">📝 Step 2/3: Configure Role Pricing</div>
+          <div class="embed-description">
+            Set the price for each role. Members will pay this amount once for lifetime access.
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 66%"></div>
+          </div>
+          <div class="progress-label">Setup progress: 66% complete</div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💡 Pricing Recommendations</div>
+            <div class="embed-field-value">
+              • Basic tier: $5-15<br>
+              • Premium tier: $15-30<br>
+              • VIP tier: $30-100
+            </div>
+          </div>
+
+          <div class="embed-footer">Click "Set Prices" to configure each role</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">💰 Set Prices</button>
+          <button class="button button-secondary">Back</button>
+        </div>
+      </div>
+
+      <div class="modal-overlay">
+        <div class="modal">
+          <div class="modal-title">Set Pricing for @Premium Member</div>
+
+          <div class="form-group">
+            <label class="form-label">Price (USD) *</label>
+            <input type="text" class="form-input" placeholder="15.00" value="">
+            <div class="form-hint">Enter amount in USD (e.g., 15.00). Min: $1.00</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Type</label>
+            <select class="form-input">
+              <option>One-time payment (lifetime access)</option>
+              <option>Monthly subscription</option>
+              <option>Annual subscription</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description (optional)</label>
+            <input type="text" class="form-input" placeholder="Access to premium channels and perks" value="">
+            <div class="form-hint">Shown to members during purchase. Max 100 characters.</div>
+          </div>
+
+          <div class="components">
+            <button class="button button-success">✅ Save & Next Role</button>
+            <button class="button button-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Component:</strong> Discord Modal (pop-up form) triggered by button<br>
+          <strong>Validation:</strong> Client-side check for valid number format, min $1.00<br>
+          <strong>Sequential:</strong> One modal per role (if multiple selected), reduces overwhelm<br>
+          <strong>Guidance:</strong> Placeholder shows format, hint explains constraints<br>
+          <strong>NEW Discord Feature:</strong> Select dropdown now supported in modals (payment type)
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 5: PRICING CONFIRMED -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">Pricing Summary</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed success">
+          <div class="embed-title">✅ Pricing Configured</div>
+          <div class="embed-description">
+            Here's your pricing structure:
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💎 @Premium Member</div>
+            <div class="embed-field-value">
+              <strong>$15.00 USD</strong> • One-time payment<br>
+              <em>Access to premium channels and perks</em>
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">⭐ @VIP Access</div>
+            <div class="embed-field-value">
+              <strong>$30.00 USD</strong> • One-time payment<br>
+              <em>All premium benefits + priority support</em>
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">📊 Potential Revenue</div>
+            <div class="embed-field-value">
+              If 10 members join each role: <strong>$450 total</strong>
+            </div>
+          </div>
+
+          <div class="embed-footer">Setup progress: 75% complete</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">Continue to Payment Setup</button>
+          <button class="button button-secondary">Edit Pricing</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Summary View:</strong> Shows all configured pricing for review<br>
+          <strong>Revenue Preview:</strong> Motivational calculation (potential earnings)<br>
+          <strong>Formatting:</strong> Bold for prices, italics for descriptions<br>
+          <strong>Edit Option:</strong> Easy to go back without losing progress
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 6: PAYMENT METHOD SELECTION -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">6</div>
+        <div class="step-title">Payment Method Selection</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">📝 Step 3/3: Choose Payment Methods</div>
+          <div class="embed-description">
+            Select which payment processors you want to accept. You can enable one or both.
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 85%"></div>
+          </div>
+          <div class="progress-label">Setup progress: 85% complete</div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💳 Stripe</div>
+            <div class="embed-field-value">
+              Accept credit/debit cards globally. 2.9% + $0.30 per transaction.<br>
+              <strong>Recommended for most users</strong> - Fast setup, great UX
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💰 PayPal</div>
+            <div class="embed-field-value">
+              Accept PayPal payments. 3.49% + fixed fee per transaction.<br>
+              Good for international users who prefer PayPal
+            </div>
+          </div>
+
+          <div class="embed-footer">You'll need API credentials for your chosen method(s)</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">💳 Setup Stripe</button>
+          <button class="button button-primary">💰 Setup PayPal</button>
+          <button class="button button-success">✅ Setup Both</button>
+        </div>
+
+        <div class="components">
+          <button class="button button-secondary">Back</button>
+          <button class="button button-link">Skip for Now</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Choice Architecture:</strong> 3 clear options (Stripe, PayPal, Both)<br>
+          <strong>Transparency:</strong> Show fees upfront (builds trust)<br>
+          <strong>Recommendation:</strong> Subtle guidance ("Recommended for most users")<br>
+          <strong>Flexibility:</strong> Can skip and configure later<br>
+          <strong>Two Rows:</strong> Primary actions (payment choices) separate from navigation
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 7: STRIPE API KEY MODAL -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">7</div>
+        <div class="step-title">Stripe Integration (Modal)</div>
+      </div>
+
+      <div class="modal-overlay">
+        <div class="modal">
+          <div class="modal-title">💳 Connect Your Stripe Account</div>
+
+          <div class="form-group">
+            <label class="form-label">Stripe Publishable Key *</label>
+            <input type="text" class="form-input code" placeholder="pk_live_..." value="">
+            <div class="form-hint">
+              Find in: Stripe Dashboard → Developers → API keys<br>
+              Starts with <span class="code">pk_live_</span> (live) or <span class="code">pk_test_</span> (test)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Stripe Secret Key *</label>
+            <input type="password" class="form-input code" placeholder="sk_live_..." value="">
+            <div class="form-hint">
+              Starts with <span class="code">sk_live_</span> (live) or <span class="code">sk_test_</span> (test)<br>
+              🔒 This key is stored securely and encrypted
+            </div>
+          </div>
+
+          <div class="annotation" style="margin-bottom: var(--space-md); background: rgba(240, 160, 32, 0.1); border-color: var(--warning);">
+            <div class="annotation-title" style="color: var(--warning);">⚠️ Important Security Note</div>
+            <div class="annotation-content">
+              • Never share your secret key publicly<br>
+              • Use <strong>live keys</strong> for real payments, <strong>test keys</strong> for testing<br>
+              • You can revoke/rotate keys anytime in Stripe Dashboard
+            </div>
+          </div>
+
+          <div class="components">
+            <button class="button button-success">✅ Connect Stripe</button>
+            <button class="button button-link">📖 How to Find Keys</button>
+            <button class="button button-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Security Focus:</strong> Emphasis on encryption and safe storage<br>
+          <strong>Guidance:</strong> Clear instructions on where to find keys<br>
+          <strong>Validation:</strong> Check key format (starts with pk_/sk_)<br>
+          <strong>Help Link:</strong> Detailed guide for visual learners<br>
+          <strong>Font:</strong> Monospace (JetBrains Mono) for API keys improves readability
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 8: COMPLETION -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">8</div>
+        <div class="step-title">Setup Complete! 🎉</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed success">
+          <div class="embed-title">🎉 Docobo Setup Complete!</div>
+          <div class="embed-description">
+            Your server is now ready to accept payments. Here's your summary:
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%"></div>
+          </div>
+          <div class="progress-label">Setup progress: 100% complete ✅</div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💰 Monetized Roles</div>
+            <div class="embed-field-value">
+              <span class="role-tag">💎 @Premium Member - $15.00</span>
+              <span class="role-tag">⭐ @VIP Access - $30.00</span>
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💳 Payment Methods</div>
+            <div class="embed-field-value">
+              ✅ Stripe (connected)<br>
+              ❌ PayPal (not configured)
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">📊 Potential Revenue</div>
+            <div class="embed-field-value">
+              <strong>$45/member</strong> average • <strong>$450</strong> if 10 join
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">⏭️ What's Next?</div>
+            <div class="embed-field-value">
+              • Members use <span class="code">/join-premium</span> to view & purchase<br>
+              • You manage with <span class="code">/admin dashboard</span><br>
+              • View earnings with <span class="code">/admin stats</span>
+            </div>
+          </div>
+
+          <div class="embed-footer">Docobo • Type /help for assistance</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">🚀 Announce to Server</button>
+          <button class="button button-success">📊 Open Dashboard</button>
+          <button class="button button-secondary">🧪 Test Purchase Flow</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Celebration:</strong> Emoji in title + success color = accomplishment<br>
+          <strong>Summary:</strong> Complete overview of what was configured<br>
+          <strong>Next Actions:</strong> Clear CTAs for immediate next steps<br>
+          <strong>Commands:</strong> Monospace format makes copy-paste easy<br>
+          <strong>3 Button Options:</strong> Announce (most common), Dashboard (power users), Test (cautious users)
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📊 Flow Metrics & Success Criteria</div>
+      <div class="annotation-content">
+        <strong>Target Metrics:</strong><br>
+        • <strong>Setup Completion Rate:</strong> >80% of users who start complete all steps<br>
+        • <strong>Time to Complete:</strong> <5 minutes average (target: 3 min)<br>
+        • <strong>Error Rate:</strong> <10% of users encounter validation errors<br>
+        • <strong>Help Usage:</strong> <20% click help guides (indicates clarity)<br>
+        • <strong>Abandonment Points:</strong> Track where users drop off most<br><br>
+
+        <strong>Success Indicators:</strong><br>
+        • User completes flow without external help<br>
+        • First payment processed within 24 hours of setup<br>
+        • User shares <span class="code">/join-premium</span> command in server<br>
+        • Positive feedback score (NPS >40)
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🎨 Design System Reference</div>
+      <div class="annotation-content">
+        <strong>Colors Used:</strong><br>
+        • Docobo Blue (#4A90E2) - Primary brand, trust<br>
+        • Success Green (#43B581) - Confirmation, progress<br>
+        • Discord Dark (#36393F) - Native integration<br><br>
+
+        <strong>Typography:</strong><br>
+        • Be Vietnam Pro (400, 600, 700) - All UI text<br>
+        • JetBrains Mono (400) - API keys, commands<br><br>
+
+        <strong>Components:</strong><br>
+        • Discord Embeds (border-left colored bar)<br>
+        • Buttons (Primary, Secondary, Success)<br>
+        • Select Menus (role selection)<br>
+        • Modals (pricing, API keys)<br>
+        • Progress Bars (visual advancement)
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

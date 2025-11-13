@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docobo Admin Configuration Panel - Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --docobo-blue: #4A90E2;
+      --docobo-navy: #1E3A5F;
+      --success: #43B581;
+      --warning: #F0A020;
+      --error: #F04747;
+      --info: #7289DA;
+      --discord-dark: #36393F;
+      --discord-darker: #2C2F33;
+      --discord-darkest: #23272A;
+      --discord-text: #DCDDDE;
+      --discord-text-muted: #99AAB5;
+      --font-primary: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--discord-darkest);
+      color: var(--discord-text);
+      padding: var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .wireframe-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--discord-darker);
+    }
+
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: var(--discord-text-muted);
+    }
+
+    .annotation {
+      background: rgba(74, 144, 226, 0.1);
+      border-left: 3px solid var(--docobo-blue);
+      padding: var(--space-md);
+      margin: var(--space-lg) 0;
+      border-radius: 4px;
+    }
+
+    .annotation-title {
+      font-weight: 600;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .annotation-content {
+      font-size: 14px;
+      color: var(--discord-text);
+      line-height: 1.5;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .dashboard-card {
+      background: var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-icon {
+      font-size: 32px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .card-stat {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-xs);
+      line-height: 1;
+    }
+
+    .card-label {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-detail {
+      font-size: 13px;
+      color: var(--discord-text-muted);
+      padding: var(--space-sm) 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .discord-message {
+      background: var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .bot-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--docobo-blue), var(--docobo-navy));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .bot-name {
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .bot-badge {
+      background: var(--docobo-blue);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .embed {
+      border-left: 4px solid var(--docobo-blue);
+      background: var(--discord-dark);
+      border-radius: 4px;
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .embed.success {
+      border-color: var(--success);
+    }
+
+    .embed.warning {
+      border-color: var(--warning);
+    }
+
+    .embed.error {
+      border-color: var(--error);
+    }
+
+    .embed-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-sm);
+    }
+
+    .embed-description {
+      font-size: 14px;
+      color: var(--discord-text);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .embed-field {
+      margin-bottom: var(--space-md);
+    }
+
+    .embed-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .embed-field-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .embed-field-value {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      line-height: 1.5;
+    }
+
+    .embed-footer {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-primary {
+      background: var(--docobo-blue);
+      color: white;
+    }
+
+    .button-secondary {
+      background: #4E5058;
+      color: var(--discord-text);
+    }
+
+    .button-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .button-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .button-link {
+      background: transparent;
+      color: var(--docobo-blue);
+      text-decoration: none;
+      padding: 8px 0;
+    }
+
+    .role-config-item {
+      background: var(--discord-darkest);
+      border: 1px solid var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .role-config-item:hover {
+      border-color: var(--docobo-blue);
+    }
+
+    .role-info {
+      flex: 1;
+    }
+
+    .role-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .role-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+    }
+
+    .role-meta {
+      font-size: 13px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-xs);
+    }
+
+    .role-actions {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+      color: var(--discord-text);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-active {
+      background: rgba(67, 181, 129, 0.2);
+      color: var(--success);
+    }
+
+    .status-inactive {
+      background: rgba(153, 170, 181, 0.2);
+      color: var(--discord-text-muted);
+    }
+
+    .status-pending {
+      background: rgba(240, 160, 32, 0.2);
+      color: var(--warning);
+    }
+
+    .transaction-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .transaction-item {
+      background: var(--discord-darkest);
+      border-radius: 6px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-info {
+      flex: 1;
+    }
+
+    .transaction-user {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .transaction-details {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+    }
+
+    .transaction-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success);
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: var(--space-md);
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .role-config-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+      }
+
+      .role-actions {
+        width: 100%;
+      }
+
+      .role-actions .button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <div class="header">
+      <h1>⚙️ Admin Configuration Panel</h1>
+      <p>Server owner dashboard • Manage roles, payments, and settings</p>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📋 Design Rationale</div>
+      <div class="annotation-content">
+        <strong>Key Principles:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li><strong>At-a-glance metrics:</strong> Dashboard cards show key stats immediately</li>
+          <li><strong>Quick actions:</strong> Common tasks accessible with 1-2 clicks</li>
+          <li><strong>Permission-gated:</strong> Only server owners/admins see this panel</li>
+          <li><strong>Real-time updates:</strong> Live transaction feed and earnings tracking</li>
+          <li><strong>Clear hierarchy:</strong> Most important actions (stats, roles) first</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DASHBOARD OVERVIEW -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin-bottom: var(--space-lg);">📊 Dashboard Overview</h2>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">💰</div>
+          <div class="card-title">Total Revenue</div>
+        </div>
+        <div class="card-stat">$2,450</div>
+        <div class="card-label">All-time earnings</div>
+        <div class="card-detail">
+          <span>This month:</span>
+          <span style="color: var(--success); font-weight: 600;">+$385</span>
+        </div>
+        <div class="card-detail">
+          <span>Last month:</span>
+          <span>$290</span>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Premium Members</div>
+        </div>
+        <div class="card-stat">65</div>
+        <div class="card-label">Active paying members</div>
+        <div class="card-detail">
+          <span>Premium:</span>
+          <span style="font-weight: 600;">47</span>
+        </div>
+        <div class="card-detail">
+          <span>VIP:</span>
+          <span style="font-weight: 600;">18</span>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Conversion Rate</div>
+        </div>
+        <div class="card-stat">12.5%</div>
+        <div class="card-label">Members who purchased</div>
+        <div class="card-detail">
+          <span>Total members:</span>
+          <span style="font-weight: 600;">520</span>
+        </div>
+        <div class="card-detail">
+          <span>Paid:</span>
+          <span style="font-weight: 600;">65</span>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">💳</div>
+          <div class="card-title">Avg Transaction</div>
+        </div>
+        <div class="card-stat">$37</div>
+        <div class="card-label">Per purchase</div>
+        <div class="card-detail">
+          <span>Total transactions:</span>
+          <span style="font-weight: 600;">66</span>
+        </div>
+        <div class="card-detail">
+          <span>Refunds:</span>
+          <span style="color: var(--error); font-weight: 600;">1 (1.5%)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Dashboard Cards</div>
+      <div class="annotation-content">
+        <strong>Card Structure:</strong> Icon + Title + Large Stat + Label + Detail Rows<br>
+        <strong>Visual Hierarchy:</strong> Large numbers (48px) draw attention immediately<br>
+        <strong>Hover Effect:</strong> Cards lift on hover (interactive, explorable)<br>
+        <strong>Comparative Data:</strong> Show month-over-month for context<br>
+        <strong>Grid Layout:</strong> Responsive (4 cols desktop → 1 col mobile)<br>
+        <strong>Color Coding:</strong> Green for positive trends, red for issues
+      </div>
+    </div>
+
+    <!-- ROLE CONFIGURATION -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin: var(--space-2xl) 0 var(--space-lg);">🎭 Role Configuration</h2>
+
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed">
+        <div class="embed-title">⚙️ Manage Paid Roles</div>
+        <div class="embed-description">
+          Configure pricing, enable/disable roles, and view performance metrics.
+        </div>
+
+        <div class="role-config-item">
+          <div class="role-info">
+            <div class="role-name">💎 @Premium Member</div>
+            <div class="role-price">$15.00 <span style="font-size: 14px; font-weight: 400; color: var(--discord-text-muted);">USD • One-time</span></div>
+            <div class="role-meta">
+              47 members • $705 total revenue • <span class="status-indicator status-active">● Active</span>
+            </div>
+          </div>
+          <div class="role-actions">
+            <button class="button button-secondary">✏️ Edit</button>
+            <button class="button button-secondary">📊 Stats</button>
+            <button class="button button-danger">⏸️ Pause</button>
+          </div>
+        </div>
+
+        <div class="role-config-item">
+          <div class="role-info">
+            <div class="role-name">⭐ @VIP Access</div>
+            <div class="role-price">$30.00 <span style="font-size: 14px; font-weight: 400; color: var(--discord-text-muted);">USD • One-time</span></div>
+            <div class="role-meta">
+              18 members • $540 total revenue • <span class="status-indicator status-active">● Active</span>
+            </div>
+          </div>
+          <div class="role-actions">
+            <button class="button button-secondary">✏️ Edit</button>
+            <button class="button button-secondary">📊 Stats</button>
+            <button class="button button-danger">⏸️ Pause</button>
+          </div>
+        </div>
+
+        <div class="role-config-item" style="opacity: 0.6;">
+          <div class="role-info">
+            <div class="role-name">🌟 @Early Supporter</div>
+            <div class="role-price">$50.00 <span style="font-size: 14px; font-weight: 400; color: var(--discord-text-muted);">USD • One-time</span></div>
+            <div class="role-meta">
+              12 members • $600 total revenue • <span class="status-indicator status-inactive">○ Paused</span>
+            </div>
+          </div>
+          <div class="role-actions">
+            <button class="button button-secondary">✏️ Edit</button>
+            <button class="button button-secondary">📊 Stats</button>
+            <button class="button button-success">▶️ Resume</button>
+          </div>
+        </div>
+
+        <div class="embed-footer">Total: 3 roles configured • 2 active, 1 paused</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">➕ Add New Role</button>
+        <button class="button button-secondary">📋 View All Stats</button>
+        <button class="button button-link">📖 Role Setup Guide</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Role Configuration</div>
+      <div class="annotation-content">
+        <strong>List View:</strong> All roles in cards for easy scanning<br>
+        <strong>Inline Actions:</strong> Edit, Stats, Pause/Resume directly on each role<br>
+        <strong>Status Indicators:</strong> Visual badges (Active/Paused) with color + icon<br>
+        <strong>Performance Metrics:</strong> Member count + revenue shown inline<br>
+        <strong>Pause vs Delete:</strong> Pause preserves data, can resume (safer than delete)<br>
+        <strong>Visual Dimming:</strong> Paused roles at 60% opacity
+      </div>
+    </div>
+
+    <!-- RECENT TRANSACTIONS -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin: var(--space-2xl) 0 var(--space-lg);">💳 Recent Transactions</h2>
+
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed success">
+        <div class="embed-title">📋 Transaction History</div>
+        <div class="embed-description">
+          Live feed of all payments. Click transaction ID to view details.
+        </div>
+
+        <div class="transaction-list">
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@NewMember purchased @Premium Member</div>
+              <div class="transaction-details">
+                2 minutes ago • <span class="code">tx_3Abc789Def123Ghi</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$15.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@CryptoFan purchased @VIP Access</div>
+              <div class="transaction-details">
+                1 hour ago • <span class="code">tx_2Xyz456Mno789Pqr</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$30.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@DevGuru purchased @Premium Member</div>
+              <div class="transaction-details">
+                3 hours ago • <span class="code">tx_1Qwe123Rty456Uio</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$15.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@StartupOwner purchased @VIP Access</div>
+              <div class="transaction-details">
+                5 hours ago • <span class="code">tx_7Jkl890Ghf234Cvb</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$30.00</div>
+          </div>
+
+          <div class="transaction-item" style="opacity: 0.6;">
+            <div class="transaction-info">
+              <div class="transaction-user">@OldMember refund issued</div>
+              <div class="transaction-details">
+                Yesterday • <span class="code">tx_5Nmk678Bnm901Lkj</span> • Reason: Not satisfied
+              </div>
+            </div>
+            <div class="transaction-amount" style="color: var(--error);">-$15.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@DesignerPro purchased @Premium Member</div>
+              <div class="transaction-details">
+                Yesterday • <span class="code">tx_4Zaq567Xsw890Cde</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$15.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-user">@MarketingGuru purchased @VIP Access</div>
+              <div class="transaction-details">
+                2 days ago • <span class="code">tx_6Plm345Okn678Ijm</span>
+              </div>
+            </div>
+            <div class="transaction-amount">+$30.00</div>
+          </div>
+        </div>
+
+        <div class="embed-footer">Showing last 50 transactions • Auto-refreshes every 30 seconds</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">📊 Export CSV</button>
+        <button class="button button-secondary">🔍 Search Transactions</button>
+        <button class="button button-secondary">📅 Filter by Date</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Transaction History</div>
+      <div class="annotation-content">
+        <strong>Live Feed:</strong> Real-time updates (30s refresh)<br>
+        <strong>Scrollable List:</strong> Max height with scroll for long histories<br>
+        <strong>Transaction IDs:</strong> Monospace font, clickable for details<br>
+        <strong>Refunds Highlighted:</strong> Red amount, dimmed card, includes reason<br>
+        <strong>Relative Timestamps:</strong> "2 minutes ago" more intuitive than absolute<br>
+        <strong>Export Option:</strong> CSV download for accounting/tax purposes
+      </div>
+    </div>
+
+    <!-- PAYMENT METHOD SETTINGS -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin: var(--space-2xl) 0 var(--space-lg);">💳 Payment Method Settings</h2>
+
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed">
+        <div class="embed-title">🔧 Payment Processor Configuration</div>
+        <div class="embed-description">
+          Manage your payment methods and API credentials.
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">💳 Stripe</div>
+          <div class="embed-field-value">
+            <span class="status-indicator status-active">● Connected</span><br>
+            Account: <span class="code">acct_1Abc234Def567Ghi</span><br>
+            Mode: <strong>Live</strong> (accepting real payments)<br>
+            Last tested: November 13, 2025 at 9:30 AM
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">💰 PayPal</div>
+          <div class="embed-field-value">
+            <span class="status-indicator status-inactive">○ Not Connected</span><br>
+            Connect PayPal to offer more payment options to members.
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">🔒 Security</div>
+          <div class="embed-field-value">
+            • API keys are encrypted at rest<br>
+            • All transactions use HTTPS/TLS 1.3<br>
+            • Webhook signatures verified<br>
+            • PCI DSS Level 1 compliant (via Stripe/PayPal)
+          </div>
+        </div>
+
+        <div class="embed-footer">Docobo never stores card numbers or CVVs</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">🔄 Reconnect Stripe</button>
+        <button class="button button-primary">➕ Connect PayPal</button>
+        <button class="button button-secondary">🧪 Test Connection</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Payment Settings</div>
+      <div class="annotation-content">
+        <strong>Status Visibility:</strong> Clear connected/not connected states<br>
+        <strong>Account Info:</strong> Show truncated account IDs for verification<br>
+        <strong>Mode Indicator:</strong> Live vs Test mode clearly labeled (critical)<br>
+        <strong>Security Emphasis:</strong> Reassure admins about data protection<br>
+        <strong>Test Connection:</strong> Ability to verify setup without real transactions<br>
+        <strong>Reconnect:</strong> Easy to rotate keys if compromised
+      </div>
+    </div>
+
+    <!-- ADMIN ACTIONS -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin: var(--space-2xl) 0 var(--space-lg);">🔧 Admin Actions</h2>
+
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed warning">
+        <div class="embed-title">⚠️ Manual Actions & Overrides</div>
+        <div class="embed-description">
+          Perform administrative actions. Use with caution - these actions are logged.
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">👤 Member Management</div>
+          <div class="embed-field-value">
+            • <strong>Grant Role:</strong> Give premium access without payment (gifts, prizes)<br>
+            • <strong>Revoke Role:</strong> Remove access (violations, chargebacks)<br>
+            • <strong>View History:</strong> See all purchases by specific member
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">💸 Financial Actions</div>
+          <div class="embed-field-value">
+            • <strong>Issue Refund:</strong> Process refund and remove role<br>
+            • <strong>Adjust Amount:</strong> Modify transaction amount (accounting corrections)<br>
+            • <strong>Cancel Pending:</strong> Cancel stuck/pending transactions
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">📊 Reporting</div>
+          <div class="embed-field-value">
+            • <strong>Revenue Report:</strong> Generate monthly/yearly reports<br>
+            • <strong>Member Activity:</strong> Export member purchase data<br>
+            • <strong>Audit Log:</strong> View all admin actions (transparency)
+          </div>
+        </div>
+
+        <div class="embed-footer">⚠️ All actions are logged and can be audited • Use responsibly</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">👤 Manage Member</button>
+        <button class="button button-danger">💸 Issue Refund</button>
+        <button class="button button-secondary">📊 Generate Report</button>
+        <button class="button button-link">📜 View Audit Log</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Admin Actions</div>
+      <div class="annotation-content">
+        <strong>Warning Color:</strong> Amber border indicates caution needed<br>
+        <strong>Grouped Actions:</strong> Related functions organized logically<br>
+        <strong>Clear Consequences:</strong> Each action explains what happens<br>
+        <strong>Audit Emphasis:</strong> Footer reminds of logging (accountability)<br>
+        <strong>Dangerous Actions:</strong> Red button for refunds (financial impact)<br>
+        <strong>Use Cases Specified:</strong> Examples provided (gifts, chargebacks, etc.)
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS & ALERTS -->
+    <h2 style="font-size: 24px; font-weight: 600; color: var(--discord-text); margin: var(--space-2xl) 0 var(--space-lg);">🔔 Notifications & Alerts</h2>
+
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed">
+        <div class="embed-title">🔔 Notification Preferences</div>
+        <div class="embed-description">
+          Choose how you want to be notified about important events.
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">💰 Payment Notifications</div>
+          <div class="embed-field-value">
+            <span class="status-indicator status-active">● Enabled</span><br>
+            Notify in: <strong>#admin-logs</strong><br>
+            When: Every successful payment<br>
+            Format: Embed with member name, role, amount
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">⚠️ Error Alerts</div>
+          <div class="embed-field-value">
+            <span class="status-indicator status-active">● Enabled</span><br>
+            Notify: <strong>@Server Owner</strong> (DM)<br>
+            When: Payment failures, API errors, permission issues<br>
+            Threshold: 3+ errors in 1 hour
+          </div>
+        </div>
+
+        <div class="embed-field">
+          <div class="embed-field-name">📊 Weekly Reports</div>
+          <div class="embed-field-value">
+            <span class="status-indicator status-pending">◐ Pending Setup</span><br>
+            Email: Not configured<br>
+            Frequency: Every Monday 9 AM UTC<br>
+            Content: Revenue, new members, trends
+          </div>
+        </div>
+
+        <div class="embed-footer">Notifications can be customized per channel or DM</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">⚙️ Configure Channels</button>
+        <button class="button button-secondary">📧 Set Email</button>
+        <button class="button button-link">🔕 Mute Notifications</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Notifications</div>
+      <div class="annotation-content">
+        <strong>Granular Control:</strong> Configure each notification type separately<br>
+        <strong>Channel Selection:</strong> Choose where notifications post<br>
+        <strong>Threshold Settings:</strong> Avoid spam (batch errors, not every one)<br>
+        <strong>Email Reports:</strong> Weekly summaries for offline review<br>
+        <strong>Mute Option:</strong> Temporarily disable without full configuration reset<br>
+        <strong>Status Indicators:</strong> Active/Pending shows current state
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🔒 Security & Permissions</div>
+      <div class="annotation-content">
+        <strong>Permission Requirements:</strong><br>
+        • <strong>View Dashboard:</strong> Administrator or "Manage Server" permission<br>
+        • <strong>Edit Roles:</strong> Administrator only<br>
+        • <strong>Payment Settings:</strong> Server Owner only<br>
+        • <strong>Refunds:</strong> Administrator (logged action)<br>
+        • <strong>Audit Log:</strong> Server Owner only<br><br>
+
+        <strong>Security Features:</strong><br>
+        • All admin actions logged with timestamp + user<br>
+        • API keys encrypted at rest (AES-256)<br>
+        • Webhook signatures verified (HMAC-SHA256)<br>
+        • Rate limiting on admin commands (10/min per user)<br>
+        • Two-factor authentication recommended for owners<br><br>
+
+        <strong>Audit Trail:</strong><br>
+        • Who performed action<br>
+        • What action (role grant, refund, config change)<br>
+        • When (timestamp)<br>
+        • Result (success/failure)<br>
+        • Retention: 1 year minimum (compliance)
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📊 Admin Success Metrics</div>
+      <div class="annotation-content">
+        <strong>Target Metrics:</strong><br>
+        • <strong>Dashboard Usage:</strong> Admins check dashboard 2-3x per week<br>
+        • <strong>Response Time:</strong> Issues resolved within 24 hours<br>
+        • <strong>Refund Rate:</strong> <2% of all transactions<br>
+        • <strong>Configuration Time:</strong> Changes take <5 minutes<br>
+        • <strong>Satisfaction:</strong> Admin NPS score >60<br><br>
+
+        <strong>Success Indicators:</strong><br>
+        • Admins can self-serve without support<br>
+        • Clear understanding of revenue trends<br>
+        • Proactive issue detection via alerts<br>
+        • Easy export for accounting/taxes<br>
+        • Confident in platform security
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🎨 Design System Reference</div>
+      <div class="annotation-content">
+        <strong>Colors Used:</strong><br>
+        • Docobo Blue (#4A90E2) - Primary actions, stats<br>
+        • Success Green (#43B581) - Positive metrics, active status, revenue<br>
+        • Warning Amber (#F0A020) - Caution areas, pending states<br>
+        • Error Red (#F04747) - Dangerous actions, refunds, issues<br><br>
+
+        <strong>Typography:</strong><br>
+        • Be Vietnam Pro (400, 600, 700) - All UI text<br>
+        • JetBrains Mono (400) - Transaction IDs, account IDs<br><br>
+
+        <strong>Components:</strong><br>
+        • Dashboard Cards (hover lift effect)<br>
+        • Role Configuration Items (inline actions)<br>
+        • Transaction List (scrollable, real-time)<br>
+        • Status Indicators (color + icon + text)<br>
+        • Warning Embeds (amber border for caution)
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

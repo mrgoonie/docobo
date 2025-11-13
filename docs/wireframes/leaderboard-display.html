@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docobo Leaderboard Display - Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --docobo-blue: #4A90E2;
+      --docobo-navy: #1E3A5F;
+      --premium-purple: #7C3AED;
+      --success: #43B581;
+      --warning: #F0A020;
+      --gold: #FFD700;
+      --silver: #C0C0C0;
+      --bronze: #CD7F32;
+      --discord-dark: #36393F;
+      --discord-darker: #2C2F33;
+      --discord-darkest: #23272A;
+      --discord-text: #DCDDDE;
+      --discord-text-muted: #99AAB5;
+      --font-primary: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--discord-darkest);
+      color: var(--discord-text);
+      padding: var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .wireframe-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--discord-darker);
+    }
+
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), var(--premium-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-sm);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: var(--discord-text-muted);
+    }
+
+    .annotation {
+      background: rgba(74, 144, 226, 0.1);
+      border-left: 3px solid var(--docobo-blue);
+      padding: var(--space-md);
+      margin: var(--space-lg) 0;
+      border-radius: 4px;
+    }
+
+    .annotation-title {
+      font-weight: 600;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .annotation-content {
+      font-size: 14px;
+      color: var(--discord-text);
+      line-height: 1.5;
+    }
+
+    .discord-message {
+      background: var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-2xl);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .bot-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--docobo-blue), var(--docobo-navy));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .bot-name {
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .bot-badge {
+      background: var(--docobo-blue);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .embed {
+      border-left: 4px solid var(--docobo-blue);
+      background: var(--discord-dark);
+      border-radius: 4px;
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .embed.premium {
+      border-color: var(--premium-purple);
+    }
+
+    .embed-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .embed-description {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .leaderboard-entry {
+      background: var(--discord-darkest);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      transition: all 0.3s;
+    }
+
+    .leaderboard-entry:hover {
+      transform: translateX(4px);
+      box-shadow: -4px 0 0 var(--docobo-blue);
+    }
+
+    .leaderboard-entry.rank-1 {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .leaderboard-entry.rank-2 {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), transparent);
+      border: 1px solid rgba(192, 192, 192, 0.3);
+    }
+
+    .leaderboard-entry.rank-3 {
+      background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), transparent);
+      border: 1px solid rgba(205, 127, 50, 0.3);
+    }
+
+    .leaderboard-rank {
+      font-size: 32px;
+      font-weight: 700;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .rank-1 .leaderboard-rank {
+      color: var(--gold);
+    }
+
+    .rank-2 .leaderboard-rank {
+      color: var(--silver);
+    }
+
+    .rank-3 .leaderboard-rank {
+      color: var(--bronze);
+    }
+
+    .leaderboard-user {
+      flex: 1;
+    }
+
+    .leaderboard-username {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .leaderboard-meta {
+      font-size: 13px;
+      color: var(--discord-text-muted);
+    }
+
+    .leaderboard-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      text-align: right;
+      min-width: 120px;
+    }
+
+    .user-rank-card {
+      background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(124, 58, 237, 0.1));
+      border: 2px solid var(--docobo-blue);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .user-rank-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--docobo-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .user-rank-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-rank-position {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--discord-text);
+    }
+
+    .user-rank-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+    }
+
+    .components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-primary {
+      background: var(--docobo-blue);
+      color: white;
+    }
+
+    .button-secondary {
+      background: #4E5058;
+      color: var(--discord-text);
+    }
+
+    .button-link {
+      background: transparent;
+      color: var(--docobo-blue);
+      text-decoration: none;
+      padding: 8px 0;
+    }
+
+    .embed-footer {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+
+    .stat-box {
+      background: var(--discord-darkest);
+      border-radius: 8px;
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-xs);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .page-number {
+      background: var(--discord-darkest);
+      color: var(--discord-text);
+      border: 1px solid var(--discord-darker);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .page-number:hover {
+      border-color: var(--docobo-blue);
+      color: var(--docobo-blue);
+    }
+
+    .page-number.active {
+      background: var(--docobo-blue);
+      color: white;
+      border-color: var(--docobo-blue);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: var(--space-md);
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .leaderboard-entry {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .leaderboard-amount {
+        text-align: center;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <div class="header">
+      <h1>🏆 Docobo Leaderboard</h1>
+      <p>Community rankings by contributions • Updated in real-time</p>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📋 Design Rationale</div>
+      <div class="annotation-content">
+        <strong>Key Principles:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li><strong>Gamification:</strong> Medal emojis, visual hierarchy for top 3</li>
+          <li><strong>Motivation:</strong> Show user's rank prominently to encourage engagement</li>
+          <li><strong>Transparency:</strong> Clear contribution amounts, timeframes</li>
+          <li><strong>Accessibility:</strong> Not relying solely on color (emoji + text + borders)</li>
+          <li><strong>Pagination:</strong> Max 10 entries per page for mobile readability</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MONTHLY LEADERBOARD -->
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed premium">
+        <div class="embed-title">
+          🏆 Top Contributors - November 2025
+        </div>
+        <div class="embed-description">
+          Members who've supported the community the most this month. Contributions are tracked from all premium role purchases.
+        </div>
+
+        <div class="user-rank-card">
+          <div class="user-rank-header">📍 Your Rank</div>
+          <div class="user-rank-content">
+            <div>
+              <div class="user-rank-position">#12</div>
+              <div style="font-size: 14px; color: var(--discord-text-muted); margin-top: var(--space-xs);">
+                Keep going! 💪
+              </div>
+            </div>
+            <div>
+              <div class="user-rank-amount">$45.00</div>
+              <div style="font-size: 12px; color: var(--discord-text-muted); margin-top: var(--space-xs); text-align: right;">
+                Contributed this month
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard-entry rank-1">
+          <div class="leaderboard-rank">🥇</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@AlexTheGreat</div>
+            <div class="leaderboard-meta">Premium Member since Jan 2025</div>
+          </div>
+          <div class="leaderboard-amount">$250.00</div>
+        </div>
+
+        <div class="leaderboard-entry rank-2">
+          <div class="leaderboard-rank">🥈</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@SarahCodes</div>
+            <div class="leaderboard-meta">VIP Access + Early Supporter</div>
+          </div>
+          <div class="leaderboard-amount">$180.00</div>
+        </div>
+
+        <div class="leaderboard-entry rank-3">
+          <div class="leaderboard-rank">🥉</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@DevMaster</div>
+            <div class="leaderboard-meta">Premium Member since Mar 2025</div>
+          </div>
+          <div class="leaderboard-amount">$150.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">4</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@CryptoKing</div>
+            <div class="leaderboard-meta">VIP Access</div>
+          </div>
+          <div class="leaderboard-amount">$120.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">5</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@DesignGuru</div>
+            <div class="leaderboard-meta">Early Supporter</div>
+          </div>
+          <div class="leaderboard-amount">$95.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">6</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@TechWizard</div>
+            <div class="leaderboard-meta">Premium Member</div>
+          </div>
+          <div class="leaderboard-amount">$75.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">7</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@MarketingPro</div>
+            <div class="leaderboard-meta">VIP Access</div>
+          </div>
+          <div class="leaderboard-amount">$60.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">8</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@ContentCreator</div>
+            <div class="leaderboard-meta">Premium Member</div>
+          </div>
+          <div class="leaderboard-amount">$50.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">9</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@DataAnalyst</div>
+            <div class="leaderboard-meta">Early Supporter</div>
+          </div>
+          <div class="leaderboard-amount">$48.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">10</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@StartupFounder</div>
+            <div class="leaderboard-meta">Premium Member</div>
+          </div>
+          <div class="leaderboard-amount">$45.00</div>
+        </div>
+
+        <div class="pagination">
+          <button class="page-number">◀️</button>
+          <button class="page-number active">1</button>
+          <button class="page-number">2</button>
+          <button class="page-number">3</button>
+          <button class="page-number">▶️</button>
+        </div>
+
+        <div class="embed-footer">Updated every 5 minutes • Your rank: #12 • $45.00 contributed this month</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">📊 View All-Time</button>
+        <button class="button button-secondary">👤 My Stats</button>
+        <button class="button button-link">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Monthly Leaderboard</div>
+      <div class="annotation-content">
+        <strong>Color:</strong> Premium Purple border (#7C3AED) - Distinguished from all-time<br>
+        <strong>User Rank Card:</strong> Highlighted prominently before list (personal motivation)<br>
+        <strong>Medal System:</strong> 🥇🥈🥉 for top 3 (gamification + accessibility)<br>
+        <strong>Visual Distinction:</strong> Top 3 have gradient backgrounds + colored borders<br>
+        <strong>Metadata:</strong> Shows role tier + join date (context for contributions)<br>
+        <strong>Pagination:</strong> 10 entries per page (mobile-friendly)<br>
+        <strong>Footer Reminder:</strong> Shows user's rank again (persistent context)
+      </div>
+    </div>
+
+    <!-- ALL-TIME LEADERBOARD -->
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed">
+        <div class="embed-title">
+          👑 All-Time Top Contributors
+        </div>
+        <div class="embed-description">
+          The most dedicated community supporters since the server launched. Thank you for your continued support!
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-value">$2,450</div>
+            <div class="stat-label">Total Raised</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">47</div>
+            <div class="stat-label">Premium Members</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">18</div>
+            <div class="stat-label">VIP Members</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">$37</div>
+            <div class="stat-label">Avg Contribution</div>
+          </div>
+        </div>
+
+        <div class="user-rank-card">
+          <div class="user-rank-header">📍 Your All-Time Rank</div>
+          <div class="user-rank-content">
+            <div>
+              <div class="user-rank-position">#8</div>
+              <div style="font-size: 14px; color: var(--discord-text-muted); margin-top: var(--space-xs);">
+                Top 20%! 🎉
+              </div>
+            </div>
+            <div>
+              <div class="user-rank-amount">$90.00</div>
+              <div style="font-size: 12px; color: var(--discord-text-muted); margin-top: var(--space-xs); text-align: right;">
+                Total contributed
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard-entry rank-1">
+          <div class="leaderboard-rank">🥇</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@AlexTheGreat</div>
+            <div class="leaderboard-meta">Member for 10 months • VIP Access</div>
+          </div>
+          <div class="leaderboard-amount">$750.00</div>
+        </div>
+
+        <div class="leaderboard-entry rank-2">
+          <div class="leaderboard-rank">🥈</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@CryptoKing</div>
+            <div class="leaderboard-meta">Member for 8 months • VIP Access</div>
+          </div>
+          <div class="leaderboard-amount">$520.00</div>
+        </div>
+
+        <div class="leaderboard-entry rank-3">
+          <div class="leaderboard-rank">🥉</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@SarahCodes</div>
+            <div class="leaderboard-meta">Member for 9 months • Premium + Early Supporter</div>
+          </div>
+          <div class="leaderboard-amount">$385.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">4</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@TechWizard</div>
+            <div class="leaderboard-meta">Member for 7 months • VIP Access</div>
+          </div>
+          <div class="leaderboard-amount">$290.00</div>
+        </div>
+
+        <div class="leaderboard-entry">
+          <div class="leaderboard-rank" style="color: var(--discord-text);">5</div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-username">@DevMaster</div>
+            <div class="leaderboard-meta">Member for 8 months • Premium Member</div>
+          </div>
+          <div class="leaderboard-amount">$225.00</div>
+        </div>
+
+        <div class="embed-footer">Updated hourly • Showing top 100 contributors • Your rank: #8</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">📅 View Monthly</button>
+        <button class="button button-secondary">👤 My Stats</button>
+        <button class="button button-secondary">📊 Server Stats</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - All-Time Leaderboard</div>
+      <div class="annotation-content">
+        <strong>Color:</strong> Docobo Blue border (#4A90E2) - Standard brand color<br>
+        <strong>Server Stats:</strong> Grid shows community-wide metrics (total raised, members)<br>
+        <strong>Percentile Indicator:</strong> "Top 20%!" motivates user with context<br>
+        <strong>Tenure Display:</strong> Shows "Member for X months" (longevity + contribution)<br>
+        <strong>Different Amounts:</strong> All-time totals much higher than monthly<br>
+        <strong>Update Frequency:</strong> Hourly updates vs. 5-min for monthly (less volatile)
+      </div>
+    </div>
+
+    <!-- PERSONAL STATS VIEW -->
+    <div class="discord-message">
+      <div class="message-header">
+        <div class="bot-avatar">D</div>
+        <div>
+          <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+        </div>
+      </div>
+
+      <div class="embed">
+        <div class="embed-title">
+          👤 Your Contribution Stats
+        </div>
+        <div class="embed-description">
+          Here's your complete contribution history and rankings.
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-value">$90.00</div>
+            <div class="stat-label">Total Contributed</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">#8</div>
+            <div class="stat-label">All-Time Rank</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">#12</div>
+            <div class="stat-label">Monthly Rank</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Purchases</div>
+          </div>
+        </div>
+
+        <div style="background: var(--discord-darkest); border-radius: 8px; padding: var(--space-md); margin-top: var(--space-md);">
+          <div style="font-size: 14px; font-weight: 600; color: var(--discord-text); margin-bottom: var(--space-md);">
+            📜 Purchase History
+          </div>
+
+          <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--discord-darker);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+              <div style="font-weight: 600; color: var(--discord-text);">@VIP Access</div>
+              <div style="font-weight: 700; color: var(--docobo-blue);">$30.00</div>
+            </div>
+            <div style="font-size: 12px; color: var(--discord-text-muted);">
+              November 10, 2025 • <span style="font-family: var(--font-mono);">tx_3Xyz789Abc123Def</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--discord-darker);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+              <div style="font-weight: 600; color: var(--discord-text);">@Premium Member</div>
+              <div style="font-weight: 700; color: var(--docobo-blue);">$15.00</div>
+            </div>
+            <div style="font-size: 12px; color: var(--discord-text-muted);">
+              October 5, 2025 • <span style="font-family: var(--font-mono);">tx_2Mno456Pqr789Stu</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+              <div style="font-weight: 600; color: var(--discord-text);">@Early Supporter</div>
+              <div style="font-weight: 700; color: var(--docobo-blue);">$45.00</div>
+            </div>
+            <div style="font-size: 12px; color: var(--discord-text-muted);">
+              September 1, 2025 • <span style="font-family: var(--font-mono);">tx_1Abc123Def456Ghi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="embed-footer">Member since September 2025 • 3 months active</div>
+      </div>
+
+      <div class="components">
+        <button class="button button-primary">📊 View Leaderboard</button>
+        <button class="button button-secondary">📧 Email Report</button>
+        <button class="button button-link">💬 Share Stats</button>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">💡 Design Notes - Personal Stats</div>
+      <div class="annotation-content">
+        <strong>Personal Dashboard:</strong> User-centric view with all relevant stats<br>
+        <strong>4-Stat Grid:</strong> Key metrics at a glance (total, all-time rank, monthly rank, purchases)<br>
+        <strong>Purchase History:</strong> Complete transaction log with dates + IDs<br>
+        <strong>Transparency:</strong> Show all contributions with transaction IDs (builds trust)<br>
+        <strong>Actions:</strong> Return to leaderboard, email report (for records), share (social proof)<br>
+        <strong>Monospace IDs:</strong> JetBrains Mono for transaction IDs (easy copy)
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🎮 Gamification Strategies</div>
+      <div class="annotation-content">
+        <strong>Visual Rewards:</strong><br>
+        • Medal emojis (🥇🥈🥉) for top 3 positions<br>
+        • Gradient backgrounds for podium finishers<br>
+        • Trophy emoji (🏆) in title for prestige<br>
+        • Crown emoji (👑) for all-time leaders<br><br>
+
+        <strong>Motivation Techniques:</strong><br>
+        • Show user's rank prominently (personal investment)<br>
+        • Percentile indicators ("Top 20%!") provide context<br>
+        • Encouraging messages ("Keep going! 💪")<br>
+        • Display gap to next position (future feature: "$5 to reach #11")<br><br>
+
+        <strong>Social Proof:</strong><br>
+        • Publicly recognize top contributors<br>
+        • Show tenure + contribution (longevity = credibility)<br>
+        • Community stats (total raised) show collective impact<br>
+        • Optional: Share stats button for bragging rights<br><br>
+
+        <strong>Future Enhancements:</strong><br>
+        • Badges for milestones ($100, $500, $1000 contributed)<br>
+        • Streaks (consecutive months in top 10)<br>
+        • Role-specific leaderboards (Premium vs VIP)<br>
+        • Weekly challenges with bonus points
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📊 Engagement Metrics & Success Criteria</div>
+      <div class="annotation-content">
+        <strong>Target Metrics:</strong><br>
+        • <strong>Leaderboard Views:</strong> 60%+ of premium members check monthly<br>
+        • <strong>Repeat Purchases:</strong> 15%+ motivated by rank to buy additional roles<br>
+        • <strong>Personal Stats Views:</strong> 40%+ check their stats within 7 days of purchase<br>
+        • <strong>Social Sharing:</strong> 10%+ share stats (if feature enabled)<br>
+        • <strong>Top 10 Retention:</strong> 80%+ of top 10 remain active next month<br><br>
+
+        <strong>Success Indicators:</strong><br>
+        • Users check leaderboard regularly (weekly+)<br>
+        • Users purchase additional roles to improve rank<br>
+        • Top contributors feel recognized and valued<br>
+        • Positive sentiment in feedback ("love the leaderboard!")<br>
+        • Low churn rate among ranked members
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🎨 Design System Reference</div>
+      <div class="annotation-content">
+        <strong>Colors Used:</strong><br>
+        • Docobo Blue (#4A90E2) - All-time leaderboard, amounts<br>
+        • Premium Purple (#7C3AED) - Monthly leaderboard<br>
+        • Gold (#FFD700) - 1st place<br>
+        • Silver (#C0C0C0) - 2nd place<br>
+        • Bronze (#CD7F32) - 3rd place<br><br>
+
+        <strong>Typography:</strong><br>
+        • Be Vietnam Pro (400, 600, 700) - All UI text<br>
+        • JetBrains Mono (400) - Transaction IDs<br><br>
+
+        <strong>Visual Elements:</strong><br>
+        • Gradient backgrounds for top 3 (subtle, not overwhelming)<br>
+        • Hover effects on entries (left border highlight)<br>
+        • User rank card (elevated prominence)<br>
+        • Stat grid (scannable metrics)<br>
+        • Pagination (mobile-friendly)
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

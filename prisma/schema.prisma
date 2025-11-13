@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// GUILDS
+// ============================================================
+model Guild {
+  id        String   @id @default(cuid())
+  guildId   String   @unique @db.VarChar(20) // Discord snowflake
+  guildName String   @db.VarChar(100)
+
+  // Configuration
+  prefix        String  @default("!") @db.VarChar(10)
+  locale        String  @default("en") @db.VarChar(5)
+
+  // Payment Integration
+  polarEnabled  Boolean @default(false)
+  sepayEnabled  Boolean @default(false)
+
+  // Settings (JSONB for flexibility)
+  settings      Json?   @db.JsonB
+
+  // Relationships
+  members       Member[]
+  roles         PaidRole[]
+
+  // Metadata
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("guilds")
+}
+
+// ============================================================
+// PAID ROLES
+// ============================================================
+model PaidRole {
+  id          String   @id @default(cuid())
+  guild       Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildId     String
+
+  // Discord role details
+  roleId      String   @db.VarChar(20) // Discord role snowflake
+  roleName    String   @db.VarChar(100)
+
+  // Pricing
+  priceUsd    Decimal  @db.Decimal(10, 2) // Max $99,999,999.99
+  currency    String   @default("USD") @db.VarChar(3)
+
+  // Payment Provider Product IDs
+  polarProductId  String? @db.VarChar(255)
+  sepayProductId  String? @db.VarChar(255)
+
+  // Metadata
+  description String?  @db.Text
+  isActive    Boolean  @default(true)
+
+  // Relationships
+  subscriptions Subscription[]
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([guildId, roleId])
+  @@index([guildId])
+  @@index([roleId])
+  @@map("paid_roles")
+}
+
+// ============================================================
+// MEMBERS
+// ============================================================
+model Member {
+  id        String   @id @default(cuid())
+  userId    String   @db.VarChar(20) // Discord user snowflake
+  guild     Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildId   String
+
+  // User details
+  username      String   @db.VarChar(100)
+  discriminator String?  @db.VarChar(4)
+
+  // Relationships
+  subscriptions Subscription[]
+
+  // Metadata
+  joinedAt      DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, guildId]) // User can be in multiple guilds
+  @@index([userId])
+  @@index([guildId])
+  @@map("members")
+}
+
+// ============================================================
+// SUBSCRIPTIONS
+// ============================================================
+enum SubscriptionStatus {
+  PENDING    // Payment initiated, not confirmed
+  ACTIVE     // Payment confirmed, role granted
+  PAST_DUE   // Payment failed, grace period
+  CANCELLED  // User cancelled, awaiting revocation
+  REVOKED    // Access removed
+  REFUNDED   // Payment refunded
+}
+
+enum PaymentProvider {
+  POLAR
+  SEPAY
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+
+  // Relationships
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId  String
+  paidRole  PaidRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+
+  // Payment Provider
+  provider              PaymentProvider
+  externalSubscriptionId String        @db.VarChar(255) // Polar/SePay subscription ID
+  externalCustomerId     String?       @db.VarChar(255)
+
+  // Status
+  status                SubscriptionStatus @default(PENDING)
+
+  // Billing
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean        @default(false)
+
+  // Metadata (provider-specific data)
+  metadata              Json?          @db.JsonB
+
+  // Relationships
+  webhookEvents         WebhookEvent[]
+
+  // Timestamps
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@unique([externalSubscriptionId, provider])
+  @@index([memberId])
+  @@index([status])
+  @@index([provider])
+  @@map("subscriptions")
+}
+
+// ============================================================
+// WEBHOOK EVENTS
+// ============================================================
+enum WebhookEventType {
+  // Polar events
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_UPDATED
+  SUBSCRIPTION_ACTIVE
+  SUBSCRIPTION_CANCELED
+  SUBSCRIPTION_UNCANCELED
+  SUBSCRIPTION_REVOKED
+  ORDER_CREATED
+  ORDER_UPDATED
+  ORDER_PAID
+  ORDER_REFUNDED
+
+  // SePay events
+  PAYMENT_IN
+  PAYMENT_OUT
+  PAYMENT_VERIFIED
+}
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+
+  // Event identification (for deduplication)
+  externalEventId String  @unique @db.VarChar(255) // Polar event.id OR SePay transaction.id
+  provider        PaymentProvider
+  eventType       WebhookEventType
+
+  // Relationship (nullable - event may arrive before subscription created)
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  subscriptionId  String?
+
+  // Payload
+  rawPayload      Json    @db.JsonB // Full webhook payload for audit
+
+  // Processing status
+  processed       Boolean @default(false)
+  processedAt     DateTime?
+  errorMessage    String? @db.Text
+
+  // Metadata
+  receivedAt      DateTime @default(now())
+
+  @@index([externalEventId])
+  @@index([provider])
+  @@index([processed])
+  @@index([eventType])
+  @@map("webhook_events")
+}

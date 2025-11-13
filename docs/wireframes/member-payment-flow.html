@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docobo Member Payment Flow - Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --docobo-blue: #4A90E2;
+      --docobo-navy: #1E3A5F;
+      --success: #43B581;
+      --warning: #F0A020;
+      --error: #F04747;
+      --info: #7289DA;
+      --discord-dark: #36393F;
+      --discord-darker: #2C2F33;
+      --discord-darkest: #23272A;
+      --discord-text: #DCDDDE;
+      --discord-text-muted: #99AAB5;
+      --font-primary: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--discord-darkest);
+      color: var(--discord-text);
+      padding: var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .wireframe-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--discord-darker);
+    }
+
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: var(--discord-text-muted);
+    }
+
+    .annotation {
+      background: rgba(74, 144, 226, 0.1);
+      border-left: 3px solid var(--docobo-blue);
+      padding: var(--space-md);
+      margin: var(--space-lg) 0;
+      border-radius: 4px;
+    }
+
+    .annotation-title {
+      font-weight: 600;
+      color: var(--docobo-blue);
+      margin-bottom: var(--space-sm);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .annotation-content {
+      font-size: 14px;
+      color: var(--discord-text);
+      line-height: 1.5;
+    }
+
+    .flow-section {
+      margin-bottom: var(--space-2xl);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+      gap: var(--space-md);
+    }
+
+    .step-number {
+      background: var(--docobo-blue);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .discord-message {
+      background: var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .bot-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--docobo-blue), var(--docobo-navy));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .bot-name {
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .bot-badge {
+      background: var(--docobo-blue);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .embed {
+      border-left: 4px solid var(--docobo-blue);
+      background: var(--discord-dark);
+      border-radius: 4px;
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .embed.success {
+      border-color: var(--success);
+    }
+
+    .embed.warning {
+      border-color: var(--warning);
+    }
+
+    .embed.error {
+      border-color: var(--error);
+    }
+
+    .embed.info {
+      border-color: var(--info);
+    }
+
+    .embed-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-sm);
+    }
+
+    .embed-description {
+      font-size: 14px;
+      color: var(--discord-text);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .embed-field {
+      margin-bottom: var(--space-md);
+    }
+
+    .embed-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .embed-field-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .embed-field-value {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      line-height: 1.5;
+    }
+
+    .embed-footer {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+      margin-top: var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .components {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-primary {
+      background: var(--docobo-blue);
+      color: white;
+    }
+
+    .button-secondary {
+      background: #4E5058;
+      color: var(--discord-text);
+    }
+
+    .button-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .button-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .button-link {
+      background: transparent;
+      color: var(--docobo-blue);
+      text-decoration: none;
+      padding: 8px 0;
+    }
+
+    .code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+      color: var(--discord-text);
+    }
+
+    .price-card {
+      background: var(--discord-darkest);
+      border: 2px solid var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+      transition: all 0.3s;
+    }
+
+    .price-card:hover {
+      border-color: var(--docobo-blue);
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+    }
+
+    .price-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .price-card-icon {
+      font-size: 32px;
+    }
+
+    .price-card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--discord-text);
+    }
+
+    .price-card-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--docobo-blue);
+      margin: var(--space-md) 0;
+    }
+
+    .price-card-description {
+      font-size: 14px;
+      color: var(--discord-text-muted);
+      margin-bottom: var(--space-lg);
+      line-height: 1.5;
+    }
+
+    .price-card-features {
+      list-style: none;
+      margin-bottom: var(--space-lg);
+    }
+
+    .price-card-features li {
+      padding: var(--space-xs) 0;
+      font-size: 14px;
+      color: var(--discord-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .price-card-features li::before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .payment-method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .payment-method {
+      background: var(--discord-darkest);
+      border: 2px solid var(--discord-darker);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .payment-method:hover {
+      border-color: var(--docobo-blue);
+      transform: translateY(-2px);
+    }
+
+    .payment-method-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-md);
+    }
+
+    .payment-method-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--discord-text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .payment-method-desc {
+      font-size: 12px;
+      color: var(--discord-text-muted);
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--discord-text-muted);
+      font-size: 24px;
+      margin: var(--space-lg) 0;
+    }
+
+    .ephemeral-badge {
+      display: inline-block;
+      background: rgba(240, 160, 32, 0.2);
+      color: var(--warning);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: var(--space-sm);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: var(--space-md);
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .step-title {
+        font-size: 20px;
+      }
+
+      .payment-method-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <div class="header">
+      <h1>💳 Docobo Member Payment Flow</h1>
+      <p>User journey: Discovery → Selection → Payment → Confirmation (2-3 minutes)</p>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📋 Design Rationale</div>
+      <div class="annotation-content">
+        <strong>Key Principles:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li><strong>Transparency:</strong> Show pricing, benefits, and payment methods upfront</li>
+          <li><strong>Security:</strong> Emphasize secure payment processing and data protection</li>
+          <li><strong>Speed:</strong> Minimize clicks to purchase (3-4 steps maximum)</li>
+          <li><strong>Trust:</strong> Clear refund policy, support access, transaction confirmation</li>
+          <li><strong>Ephemeral Errors:</strong> Personal messages only visible to user</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 1: PRICING DISCOVERY -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Pricing Discovery (Command: /join-premium)</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">💎 Premium Membership Options</div>
+          <div class="embed-description">
+            Unlock exclusive channels, perks, and community access. Choose the tier that's right for you.
+          </div>
+
+          <div class="price-card">
+            <div class="price-card-header">
+              <div class="price-card-icon">💎</div>
+              <div class="price-card-title">Premium Member</div>
+            </div>
+            <div class="price-card-price">$15.00 <span style="font-size: 16px; font-weight: 400; color: var(--discord-text-muted);">USD</span></div>
+            <div class="price-card-description">
+              One-time payment • Lifetime access
+            </div>
+            <ul class="price-card-features">
+              <li>Access to 5 premium channels</li>
+              <li>Monthly exclusive content</li>
+              <li>Community events & AMAs</li>
+              <li>Leaderboard tracking</li>
+            </ul>
+            <button class="button button-primary" style="width: 100%; justify-content: center;">💳 Purchase Now</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-card-header">
+              <div class="price-card-icon">⭐</div>
+              <div class="price-card-title">VIP Access</div>
+            </div>
+            <div class="price-card-price">$30.00 <span style="font-size: 16px; font-weight: 400; color: var(--discord-text-muted);">USD</span></div>
+            <div class="price-card-description">
+              One-time payment • Lifetime access
+            </div>
+            <ul class="price-card-features">
+              <li>All Premium Member benefits</li>
+              <li>Priority support (24h response)</li>
+              <li>Early access to new features</li>
+              <li>VIP-only voice channels</li>
+              <li>Custom role icon & color</li>
+            </ul>
+            <button class="button button-success" style="width: 100%; justify-content: center;">⭐ Purchase VIP</button>
+          </div>
+
+          <div class="embed-footer">Secure payments powered by Stripe • Questions? Type /help</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Pricing Cards:</strong> Visually distinct tiers with hover effects<br>
+          <strong>Value Proposition:</strong> Clear benefits listed for each tier<br>
+          <strong>Payment Type:</strong> "One-time • Lifetime" reduces friction (no recurring billing fear)<br>
+          <strong>Trust Signals:</strong> "Secure payments powered by Stripe" in footer<br>
+          <strong>Button Hierarchy:</strong> VIP uses Success (green) to differentiate from standard Premium<br>
+          <strong>Emoji Usage:</strong> Icons help differentiate tiers at a glance
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 2: PAYMENT METHOD SELECTION -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Payment Method Selection</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+          </div>
+        </div>
+
+        <div class="embed">
+          <div class="embed-title">💳 Select Payment Method</div>
+          <div class="embed-description">
+            You're purchasing: <strong>@Premium Member</strong> for <strong>$15.00 USD</strong>
+          </div>
+
+          <div class="payment-method-grid">
+            <div class="payment-method">
+              <div class="payment-method-icon">💳</div>
+              <div class="payment-method-name">Credit/Debit Card</div>
+              <div class="payment-method-desc">Visa, Mastercard, Amex</div>
+            </div>
+
+            <div class="payment-method">
+              <div class="payment-method-icon">💰</div>
+              <div class="payment-method-name">PayPal</div>
+              <div class="payment-method-desc">Fast & secure</div>
+            </div>
+          </div>
+
+          <div class="embed-field" style="margin-top: var(--space-lg);">
+            <div class="embed-field-name">🔒 Security & Privacy</div>
+            <div class="embed-field-value">
+              • Your payment info is processed securely by Stripe/PayPal<br>
+              • Docobo never stores your card details<br>
+              • All transactions are encrypted end-to-end
+            </div>
+          </div>
+
+          <div class="embed-footer">🔄 30-day refund policy • Contact server admins for assistance</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">💳 Pay with Card</button>
+          <button class="button button-primary">💰 Pay with PayPal</button>
+        </div>
+
+        <div class="components">
+          <button class="button button-secondary">◀️ Back to Pricing</button>
+          <button class="button button-link">❓ Payment FAQ</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Confirmation:</strong> Shows what's being purchased (prevents errors)<br>
+          <strong>Payment Options:</strong> Visual grid makes choice clear<br>
+          <strong>Security Focus:</strong> Multiple trust signals (encryption, no storage, secure processors)<br>
+          <strong>Refund Policy:</strong> Reduces purchase anxiety (30-day policy)<br>
+          <strong>Two-Row Buttons:</strong> Primary actions (payment) separate from navigation
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 3: PROCESSING -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Payment Processing (Ephemeral)</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+            <span class="ephemeral-badge">Only you can see this</span>
+          </div>
+        </div>
+
+        <div class="embed info">
+          <div class="embed-title">⏳ Processing Your Payment...</div>
+          <div class="embed-description">
+            Please wait while we process your payment with Stripe. This usually takes 5-10 seconds.
+            <br><br>
+            <strong>Do not close this window or refresh Discord.</strong>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💳 Payment Details</div>
+            <div class="embed-field-value">
+              Role: <strong>@Premium Member</strong><br>
+              Amount: <strong>$15.00 USD</strong><br>
+              Status: <strong>Processing...</strong>
+            </div>
+          </div>
+
+          <div class="embed-footer">Secure payment via Stripe</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Ephemeral Message:</strong> Only visible to user (sensitive payment info)<br>
+          <strong>Badge Indicator:</strong> "Only you can see this" clarifies privacy<br>
+          <strong>Progress Feedback:</strong> "Processing..." keeps user informed<br>
+          <strong>Warning:</strong> Don't close/refresh prevents accidental abandonment<br>
+          <strong>3-Second Rule:</strong> Immediate ACK sent, then async processing updates<br>
+          <strong>Color:</strong> Info Purple (not blue/green) indicates in-progress, not success
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- STEP 4A: SUCCESS -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">4A</div>
+        <div class="step-title">Payment Success (Ephemeral)</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+            <span class="ephemeral-badge">Only you can see this</span>
+          </div>
+        </div>
+
+        <div class="embed success">
+          <div class="embed-title">✅ Payment Confirmed!</div>
+          <div class="embed-description">
+            Your payment has been processed successfully. Welcome to the community!
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💰 Transaction Summary</div>
+            <div class="embed-field-value">
+              Amount Paid: <strong>$15.00 USD</strong><br>
+              Payment Method: <strong>Visa ending in 4242</strong><br>
+              Transaction ID: <span class="code">tx_1Abc234Def567Ghi890</span><br>
+              Date: <strong>November 13, 2025 at 10:42 AM UTC</strong>
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">🎭 Role Granted</div>
+            <div class="embed-field-value">
+              You now have the <strong>@Premium Member</strong> role!
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">✨ What's Next?</div>
+            <div class="embed-field-value">
+              • Explore your new premium channels (check channel list)<br>
+              • Introduce yourself in <strong>#premium-chat</strong><br>
+              • Check the leaderboard with <span class="code">/leaderboard</span><br>
+              • View your contribution history with <span class="code">/my-account</span>
+            </div>
+          </div>
+
+          <div class="embed-footer">Receipt sent to your email • Questions? Contact server admins</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-success">🚀 View Premium Channels</button>
+          <button class="button button-primary">📊 View Leaderboard</button>
+          <button class="button button-secondary">📧 Resend Receipt</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Color:</strong> Success Green - Clear positive outcome<br>
+          <strong>Transaction Details:</strong> Complete breakdown for user records<br>
+          <strong>Monospace ID:</strong> Easy to copy transaction ID if needed<br>
+          <strong>Role Confirmation:</strong> Explicit statement of what was granted<br>
+          <strong>Next Actions:</strong> Guide user to immediately use benefits<br>
+          <strong>Receipt:</strong> Email backup + option to resend<br>
+          <strong>3 CTAs:</strong> Explore benefits (primary), See standing (engagement), Admin needs (utility)
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓ (Alternative Path)</div>
+
+    <!-- STEP 4B: FAILURE -->
+    <div class="flow-section">
+      <div class="step-header">
+        <div class="step-number">4B</div>
+        <div class="step-title">Payment Failed (Ephemeral Error)</div>
+      </div>
+
+      <div class="discord-message">
+        <div class="message-header">
+          <div class="bot-avatar">D</div>
+          <div>
+            <div class="bot-name">Docobo <span class="bot-badge">BOT</span></div>
+            <span class="ephemeral-badge">Only you can see this</span>
+          </div>
+        </div>
+
+        <div class="embed error">
+          <div class="embed-title">⚠️ Payment Processing Failed</div>
+          <div class="embed-description">
+            We couldn't process your payment. This usually happens due to insufficient funds or declined cards.
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">❌ Error Details</div>
+            <div class="embed-field-value">
+              <strong>Error:</strong> Payment declined by card issuer<br>
+              <strong>Payment Method:</strong> Visa ending in 4242<br>
+              <strong>Attempted Amount:</strong> $15.00 USD<br>
+              <strong>Date:</strong> November 13, 2025 at 10:42 AM UTC
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">🔧 What to do:</div>
+            <div class="embed-field-value">
+              1. <strong>Verify your card has sufficient funds</strong><br>
+              2. Check if international transactions are enabled<br>
+              3. Try a different payment method<br>
+              4. Contact your bank if the issue persists<br>
+              5. Reach out to server admins for assistance
+            </div>
+          </div>
+
+          <div class="embed-field">
+            <div class="embed-field-name">💡 Common Issues</div>
+            <div class="embed-field-value">
+              • <strong>Insufficient funds:</strong> Add money to your account<br>
+              • <strong>Fraud protection:</strong> Contact your bank to authorize<br>
+              • <strong>Expired card:</strong> Update your payment method<br>
+              • <strong>Wrong CVV/ZIP:</strong> Double-check card details
+            </div>
+          </div>
+
+          <div class="embed-footer">No charges were made to your account • Safe to retry</div>
+        </div>
+
+        <div class="components">
+          <button class="button button-primary">🔄 Try Again</button>
+          <button class="button button-primary">💰 Try Different Method</button>
+          <button class="button button-secondary">◀️ Back to Pricing</button>
+        </div>
+
+        <div class="components">
+          <button class="button button-link">❓ Get Help</button>
+          <button class="button button-link">💬 Contact Admin</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">💡 Design Notes</div>
+        <div class="annotation-content">
+          <strong>Color:</strong> Error Red - Clear problem indication<br>
+          <strong>Plain Language:</strong> "Payment declined" not "Authorization failed"<br>
+          <strong>Specific Error:</strong> Show actual reason from payment processor<br>
+          <strong>Actionable Steps:</strong> Numbered list of solutions (not just "try again")<br>
+          <strong>Common Issues:</strong> Preemptively address frequent problems<br>
+          <strong>Reassurance:</strong> "No charges made" reduces anxiety<br>
+          <strong>Multiple CTAs:</strong> Retry, different method, or seek help<br>
+          <strong>Ephemeral:</strong> Private error, won't broadcast payment failure to server
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">📊 User Experience Metrics</div>
+      <div class="annotation-content">
+        <strong>Target Metrics:</strong><br>
+        • <strong>Purchase Completion Rate:</strong> >75% of users who view pricing complete payment<br>
+        • <strong>Time to Purchase:</strong> <2 minutes from command to confirmation<br>
+        • <strong>Payment Error Rate:</strong> <5% of attempted transactions<br>
+        • <strong>Retry Success Rate:</strong> >60% of failed payments succeed on retry<br>
+        • <strong>Support Request Rate:</strong> <10% need admin assistance<br><br>
+
+        <strong>Success Indicators:</strong><br>
+        • User completes purchase without external help<br>
+        • User immediately explores premium channels after purchase<br>
+        • User checks leaderboard within 24 hours<br>
+        • Minimal refund requests (<2%)
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🔒 Security & Compliance Considerations</div>
+      <div class="annotation-content">
+        <strong>PCI DSS Compliance:</strong><br>
+        • All payment processing handled by Stripe/PayPal (Level 1 PCI compliant)<br>
+        • Docobo never stores card numbers, CVVs, or full card data<br>
+        • Transaction IDs stored for reconciliation (no sensitive data)<br><br>
+
+        <strong>GDPR & Privacy:</strong><br>
+        • Ephemeral messages for all payment-related communication<br>
+        • User can request transaction history deletion<br>
+        • Email receipts optional (user consent)<br>
+        • Clear data retention policy (7 years for financial records)<br><br>
+
+        <strong>Fraud Prevention:</strong><br>
+        • Rate limiting: Max 3 payment attempts per 15 minutes<br>
+        • Suspicious pattern detection (multiple cards, rapid attempts)<br>
+        • Admin alerts for chargebacks and refund requests<br>
+        • Transaction ID tracking for dispute resolution
+      </div>
+    </div>
+
+    <div class="annotation">
+      <div class="annotation-title">🎨 Design System Reference</div>
+      <div class="annotation-content">
+        <strong>Colors Used:</strong><br>
+        • Docobo Blue (#4A90E2) - Primary actions, brand<br>
+        • Success Green (#43B581) - Payment confirmed, VIP tier<br>
+        • Error Red (#F04747) - Payment failures<br>
+        • Info Purple (#7289DA) - Processing state<br>
+        • Warning Amber (#F0A020) - Ephemeral badge<br><br>
+
+        <strong>Typography:</strong><br>
+        • Be Vietnam Pro (400, 600, 700) - All UI text<br>
+        • JetBrains Mono (400) - Transaction IDs, commands<br><br>
+
+        <strong>Components:</strong><br>
+        • Pricing Cards (hover effects, clear hierarchy)<br>
+        • Payment Method Grid (visual selection)<br>
+        • Ephemeral Messages (privacy indicator)<br>
+        • Error Messages (actionable, specific, reassuring)
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
