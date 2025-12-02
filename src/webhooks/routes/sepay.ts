@@ -19,7 +19,11 @@ interface SepayTransaction {
   description: string;
 }
 
-export default function sepayRoutes(server: FastifyInstance): void {
+export default function sepayRoutes(
+  server: FastifyInstance,
+  _options: unknown,
+  done: () => void
+): void {
   server.post<{ Body: SepayTransaction }>(
     '/sepay',
     async (request: FastifyRequest<{ Body: SepayTransaction }>, reply: FastifyReply) => {
@@ -66,6 +70,8 @@ export default function sepayRoutes(server: FastifyInstance): void {
       }
     }
   );
+
+  done();
 }
 
 function verifySepayAuth(authHeader: string | undefined): boolean {

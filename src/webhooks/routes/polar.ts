@@ -14,7 +14,11 @@ interface PolarWebhookEvent {
   };
 }
 
-export default function polarRoutes(server: FastifyInstance): void {
+export default function polarRoutes(
+  server: FastifyInstance,
+  _options: unknown,
+  done: () => void
+): void {
   // Add raw body hook for signature verification
   server.addContentTypeParser(
     'application/json',
@@ -71,4 +75,6 @@ export default function polarRoutes(server: FastifyInstance): void {
       }
     }
   );
+
+  done();
 }
