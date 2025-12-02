@@ -1,7 +1,7 @@
 # Docobo Codebase Summary
 
 **Generated**: 2025-12-02
-**Last Updated**: Phase 03 - Bot Core Implementation
+**Last Updated**: Phase 04 - Payment Webhooks Completion
 **Source**: repomix-output.xml
 **Total Files**: 325+ files
 **Total Tokens**: ~950,000 tokens (estimated)
@@ -14,10 +14,21 @@
 ```
 docobo/
 ├── src/                      # Application source code
+│   ├── bot/                  # Discord bot implementation
+│   │   ├── client.ts         # Discord.js client
+│   │   ├── commands/         # Slash commands
+│   │   ├── events/           # Event handlers
+│   │   ├── interactions/     # Button/menu/modal handlers
+│   │   └── utils/            # Role management utilities
+│   ├── webhooks/             # Payment webhook handlers
+│   │   ├── server.ts         # Fastify server factory
+│   │   ├── routes/           # Polar & SePay endpoints
+│   │   ├── services/         # Event processors
+│   │   └── utils/            # Signature verification & deduplication
 │   ├── config/               # Configuration and environment
-│   ├── services/             # Business logic services
+│   ├── services/             # Shared business logic
 │   ├── index.ts              # Discord bot entry point
-│   └── webhook-server.ts     # Fastify webhook server
+│   └── webhook-server.ts     # Webhook server entry point
 ├── prisma/                   # Database schema and migrations
 │   ├── schema.prisma         # Database models
 │   └── migrations/           # Migration history
@@ -94,8 +105,8 @@ docobo/
 
 **Endpoints**:
 - `GET /health`: Database connectivity check
-- `POST /webhooks/polar`: Polar.sh webhooks (placeholder)
-- `POST /webhooks/sepay`: SePay.vn webhooks (placeholder)
+- `POST /webhooks/polar`: Polar.sh webhooks (HMAC-SHA256 signature verification)
+- `POST /webhooks/sepay`: SePay.vn webhooks (API Key authentication)
 
 ---
 
@@ -313,6 +324,252 @@ docobo/
 
 ---
 
+### Payment Webhooks (Phase 04)
+
+#### `src/webhooks/server.ts` (46 lines)
+**Purpose**: Fastify webhook server factory
+**Key Features**:
+- Helmet security headers (CSP disabled for payload flexibility)
+- CORS disabled (webhooks are server-to-server)
+- Rate limiting: 100 req/min per IP
+- Health check with database connectivity test
+- Dynamic route registration for Polar & SePay
+
+**Server Configuration**:
+- Debug logging in development, info in production
+- Async initialization for plugin registration
+- Graceful error handling
+
+---
+
+#### `src/webhooks/routes/polar.ts` (75 lines)
+**Purpose**: Polar.sh webhook endpoint handler
+**Authentication**: Standard Webhooks HMAC-SHA256 signature verification
+**Key Features**:
+- Raw body parser for signature verification
+- Event deduplication check (prevents duplicate processing)
+- Async processing with `setImmediate` (non-blocking)
+- Immediate 202 acknowledgment (prevents timeout retries)
+- Signature verification errors return 403
+
+**Event Processing Flow**:
+1. Parse request body (raw + JSON)
+2. Verify HMAC signature using `webhook-id`, `webhook-timestamp`, `webhook-signature` headers
+3. Check deduplication cache (externalEventId)
+4. Acknowledge receipt (202 Accepted)
+5. Process async via `processPolarEvent()`
+6. Log errors separately (don't block acknowledgment)
+
+**Event Types Handled**:
+- `subscription.created`: Log only
+- `subscription.active`: Update status to ACTIVE, grant role
+- `subscription.canceled`: Mark CANCELLED, defer revoke to period end
+- `subscription.uncanceled`: Update status
+- `subscription.revoked`: Update status to REVOKED, revoke role
+- `order.created`: Log only
+- `order.updated`: Log only
+- `order.paid`: Handled by subscription.active
+- `order.refunded`: Update status to REFUNDED, revoke role
+
+---
+
+#### `src/webhooks/routes/sepay.ts` (86 lines)
+**Purpose**: SePay.vn webhook endpoint handler
+**Authentication**: API Key in Authorization header (Apikey or Bearer format)
+**Key Features**:
+- Simple API key validation (substring matching)
+- Filters incoming transfers only (`transferType === 'in'`)
+- Event deduplication check (transaction ID)
+- Async processing with `setImmediate`
+- Always returns 200 to prevent SePay retries
+
+**Transaction Processing Flow**:
+1. Verify Authorization header (Apikey or Bearer token)
+2. Check deduplication (SePay transaction ID)
+3. Filter outgoing transfers (only process `transferType === 'in'`)
+4. Acknowledge receipt (200 OK)
+5. Process async via `processSepayTransaction()`
+6. Log errors separately
+
+**SePay Transaction Structure**:
+- `id`: Transaction ID (primary dedup key)
+- `gateway`: Bank gateway name
+- `transactionDate`: ISO timestamp
+- `accountNumber`: Account receiving payment
+- `transferType`: 'in' or 'out'
+- `transferAmount`: Amount in VND or USD
+- `referenceCode`: Custom merchant reference (DOCOBO-guildId-roleId-userId)
+- `description`: Transaction notes
+
+---
+
+#### `src/webhooks/utils/signature.ts` (80 lines)
+**Purpose**: Standard Webhooks HMAC-SHA256 signature verification
+**Spec**: Implements [Standard Webhooks](https://github.com/standard-webhooks/standard-webhooks) specification (Polar uses this)
+**Key Features**:
+- Replay attack prevention (timestamp within 5 minutes)
+- Timing-safe comparison (prevents timing attacks)
+- Multi-signature support (v1 version prefixing)
+- Base64 secret decoding (handles `whsec_` prefix)
+- Custom error class for verification failures
+
+**Verification Process**:
+1. Extract headers: `webhook-id`, `webhook-timestamp`, `webhook-signature`
+2. Validate timestamp (±5 minutes from current time)
+3. Build signed content: `{id}.{timestamp}.{payload}`
+4. Decode secret from base64 (strip `whsec_` prefix if present)
+5. Compute HMAC-SHA256 signature
+6. Compare with provided signature (timing-safe comparison)
+7. Support multiple signature formats: `v1,<sig1> v1,<sig2>`
+
+**Error Handling**:
+- `WebhookVerificationError` thrown on verification failure
+- Missing headers → "Missing required webhook headers"
+- Old timestamp → "Webhook timestamp too old"
+- Invalid signature → "Invalid webhook signature"
+
+---
+
+#### `src/webhooks/utils/deduplication.ts` (50 lines)
+**Purpose**: Webhook event deduplication and audit trail
+**Key Functions**:
+
+**`checkDuplication(externalEventId, provider)`**:
+- Query database for existing webhook event
+- Returns true if event already processed
+- Prevents double-processing of webhook replays
+
+**`recordWebhookEvent(externalEventId, provider, eventType, rawPayload, subscriptionId?)`**:
+- Create WebhookEvent record in database
+- Store raw provider payload for audit
+- Link to subscription if available
+- Returns event ID for reference
+
+**`markEventProcessed(externalEventId, errorMessage?)`**:
+- Update processed flag and timestamp
+- Store error message if processing failed
+- Allows retry logic later
+
+**Database Audit Benefits**:
+- Complete webhook history
+- Correlation with subscriptions
+- Error tracking and debugging
+- Replay/idempotency verification
+
+---
+
+#### `src/webhooks/services/polar-service.ts` (204 lines)
+**Purpose**: Polar event processor and subscription lifecycle manager
+**Key Functions**:
+
+**`processPolarEvent(event)`**:
+- Record webhook event to database
+- Map Polar event types to internal enums
+- Route to specific handlers
+- Mark event as processed with success/error
+
+**Event Handlers**:
+
+*Subscription Events*:
+- `handleSubscriptionCreated`: Log subscription creation (no action)
+- `handleSubscriptionActive`: Find subscription, update to ACTIVE, grant role
+- `handleSubscriptionCanceled`: Mark CANCELLED, set `cancelAtPeriodEnd` flag
+- `handleSubscriptionRevoked`: Update to REVOKED, revoke role
+- `handleSubscriptionUncanceled`: Update status back to ACTIVE
+
+*Order Events*:
+- `handleOrderPaid`: Log order (subscription activation via subscription.active event)
+- `handleOrderRefunded`: Find subscription, update to REFUNDED, revoke role
+
+**Role Grant/Revoke Integration**:
+- Import `grantRoleForSubscription()`, `revokeRoleForSubscription()` from role-automation
+- Pass subscription with full relations (member, paidRole.guild)
+- Log success/failure for audit trail
+
+**Error Handling**:
+- Try-catch wrapping entire processor
+- Log errors to console
+- Mark event as processed with error message
+- Re-throw error for monitoring
+
+---
+
+#### `src/webhooks/services/sepay-service.ts` (161 lines)
+**Purpose**: SePay transaction processor and reference code parsing
+**Key Functions**:
+
+**`processSepayTransaction(transaction)`**:
+- Record transaction to database as PAYMENT_IN event
+- Parse reference code to extract subscription info
+- Find paid role in database
+- Verify payment amount meets minimum
+- Find or create member record
+- Create subscription with ACTIVE status
+- Grant role to member
+- Mark event as processed
+
+**`parseReferenceCode(code)`**:
+- Extract guildId, roleId, userId from reference code
+- Support standard format: `DOCOBO-{guildId}-{roleId}-{userId}`
+- Fallback to Discord ID extraction (17-19 digit numbers)
+- Return null if parsing fails
+
+**Payment Validation**:
+- Match paid role by guildId + roleId
+- Verify amount >= expected price
+- Log insufficient payment errors
+- Store error in webhook event for audit
+
+**Member Lifecycle**:
+- Find existing member by userId + guildId
+- Create new member if not found
+- Set initial username placeholder
+- Update on member interaction (bot commands)
+
+**Subscription Creation**:
+- Link member to paid role
+- Set provider to SEPAY
+- Use transaction ID as externalSubscriptionId
+- Set status to ACTIVE immediately
+- Store transaction metadata (gateway, date, amount, reference code)
+
+---
+
+#### `src/services/role-automation.ts` (76 lines)
+**Purpose**: Discord role grant/revoke automation triggered by webhooks
+**Key Features**:
+- Fetch guild from Discord gateway
+- Validate guild existence before attempting role operations
+- Error handling for guild not found scenarios
+- Console logging with emoji indicators (✅ for success)
+
+**`grantRoleForSubscription(subscription)`**:
+- Extract Discord guild ID from subscription relations
+- Fetch guild from Discord client
+- Call `grantRole()` utility to add role
+- Log success with role name and user ID
+- Return boolean success status
+
+**`revokeRoleForSubscription(subscription)`**:
+- Extract Discord guild ID from subscription relations
+- Fetch guild from Discord client
+- Call `revokeRole()` utility to remove role
+- Log success with role name and user ID
+- Return boolean success status
+
+**Error Handling**:
+- Guild not found → log error, return false
+- Role operation failure → return false from grantRole/revokeRole
+- Catch all errors → log and return false
+
+**Integration Points**:
+- Called by `polar-service.ts` on subscription lifecycle events
+- Called by `sepay-service.ts` on successful payment
+- Depends on bot client being initialized and connected
+- Requires bot to have ManageRoles permission in guild
+
+---
+
 ## Database Schema
 
 ### Schema Overview (`prisma/schema.prisma`)
@@ -467,17 +724,21 @@ docobo/
 - [x] Health check endpoint
 - [x] Webhook endpoint placeholders
 
+**Payment Webhooks** (Phase 4):
+- [x] Polar webhook signature verification (Standard Webhooks HMAC-SHA256)
+- [x] SePay webhook API Key verification (Apikey/Bearer authentication)
+- [x] Event deduplication logic (database-backed)
+- [x] Subscription status updates (ACTIVE, CANCELLED, REVOKED, REFUNDED)
+- [x] Role grant/revoke automation via Discord gateway
+- [x] Error handling with audit trail (WebhookEvent records)
+- [x] Async processing with immediate acknowledgment (prevents timeouts)
+- [x] Reference code parsing for SePay transactions
+- [x] Replay attack prevention (5-minute timestamp window)
+- [x] Timing-safe signature comparison (prevents timing attacks)
+
 ---
 
-### Pending (MVP Phase 4-6)
-
-**Payment Webhooks** (Phase 4):
-- [ ] Polar webhook signature verification
-- [ ] SePay webhook OAuth2 verification
-- [ ] Event deduplication logic
-- [ ] Subscription status updates
-- [ ] Role grant/revoke automation
-- [ ] Error handling and retry logic
+### Pending (MVP Phase 5-6)
 
 **Onboarding UX** (Phase 5):
 - [ ] Progressive disclosure flow (3 steps)
@@ -800,15 +1061,7 @@ docobo/
 
 ### Immediate (Current Sprint)
 
-1. **Implement Payment Webhooks** (Phase 4):
-   - Add Polar webhook signature verification (HMAC-SHA256)
-   - Add SePay OAuth2 verification
-   - Implement event deduplication (externalEventId)
-   - Implement subscription status updates
-   - Implement role grant/revoke automation
-   - Add error handling and retry logic
-
-2. **Implement Onboarding UX** (Phase 5):
+1. **Implement Onboarding UX** (Phase 5):
    - Progressive disclosure flow (3 steps)
    - Interactive components (select menus, modals, buttons)
    - Setup state persistence

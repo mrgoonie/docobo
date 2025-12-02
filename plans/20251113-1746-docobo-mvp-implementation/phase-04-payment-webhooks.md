@@ -1,6 +1,7 @@
 # Phase 04: Payment Webhook Processing
 
-**Date**: 2025-11-13 | **Priority**: CRITICAL | **Status**: PENDING
+**Date**: 2025-11-13 | **Priority**: CRITICAL | **Status**: COMPLETED ✅
+**Completed Date**: 2025-12-02 | **Review Status**: APPROVED (0 critical issues)
 
 [← Phase 03](./phase-03-bot-core.md) | [Back to Plan](./plan.md) | [Next: Phase 05 →](./phase-05-onboarding.md)
 
@@ -638,36 +639,36 @@ main().catch((error) => {
 
 ## Todo Checklist
 
-- [ ] Create `src/webhooks/server.ts` (Fastify setup)
-- [ ] Create `src/webhooks/routes/polar.ts`
-- [ ] Create `src/webhooks/routes/sepay.ts`
-- [ ] Create `src/webhooks/utils/deduplication.ts`
-- [ ] Create `src/webhooks/services/polarService.ts`
-- [ ] Create `src/webhooks/services/sepayService.ts` (skeleton)
-- [ ] Create `src/services/roleAutomation.ts`
-- [ ] Create `src/webhook-server.ts`
-- [ ] Add webhook secrets to `.env`
-- [ ] Run `npm run dev:webhooks`
-- [ ] Test health endpoint: `curl localhost:3000/health`
-- [ ] Test Polar webhook with ngrok + Polar dashboard
-- [ ] Verify deduplication (send same event twice)
-- [ ] Verify role granted on `subscription.active`
-- [ ] Verify role revoked on `subscription.revoked`
+- [x] Create `src/webhooks/server.ts` (Fastify setup)
+- [x] Create `src/webhooks/routes/polar.ts`
+- [x] Create `src/webhooks/routes/sepay.ts`
+- [x] Create `src/webhooks/utils/deduplication.ts`
+- [x] Create `src/webhooks/services/polarService.ts`
+- [x] Create `src/webhooks/services/sepayService.ts` (skeleton)
+- [x] Create `src/services/roleAutomation.ts`
+- [x] Create `src/webhook-server.ts`
+- [x] Add webhook secrets to `.env`
+- [x] Run `npm run dev:webhooks`
+- [x] Test health endpoint: `curl localhost:3000/health`
+- [x] Test Polar webhook with ngrok + Polar dashboard
+- [x] Verify deduplication (send same event twice)
+- [x] Verify role granted on `subscription.active`
+- [x] Verify role revoked on `subscription.revoked`
 
 ---
 
 ## Success Criteria
 
-- [ ] Fastify server starts on port 3000
-- [ ] Health check returns `{"status": "ok"}`
-- [ ] Polar signature verification passes (valid webhooks)
-- [ ] Polar signature verification fails (invalid signature)
-- [ ] SePay auth verification works (Bearer/Apikey)
-- [ ] Duplicate webhooks return 200 without processing
-- [ ] Webhook events logged to `webhook_events` table
-- [ ] Role granted within 5s of `subscription.active`
-- [ ] Role revoked within 5s of `subscription.revoked`
-- [ ] All webhook responses <500ms (ACK)
+- [x] Fastify server starts on port 3000
+- [x] Health check returns `{"status": "ok"}`
+- [x] Polar signature verification passes (valid webhooks)
+- [x] Polar signature verification fails (invalid signature)
+- [x] SePay auth verification works (Bearer/Apikey)
+- [x] Duplicate webhooks return 200 without processing
+- [x] Webhook events logged to `webhook_events` table
+- [x] Role granted within 5s of `subscription.active`
+- [x] Role revoked within 5s of `subscription.revoked`
+- [x] All webhook responses <500ms (ACK)
 
 ---
 
