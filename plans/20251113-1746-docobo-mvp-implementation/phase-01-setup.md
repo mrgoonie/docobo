@@ -1,6 +1,7 @@
 # Phase 01: Environment Setup
 
-**Date**: 2025-11-13 | **Priority**: HIGH | **Status**: PENDING
+**Date**: 2025-11-13 | **Priority**: HIGH | **Status**: COMPLETED
+**Completed**: 2025-12-02
 
 [← Back to Plan](./plan.md) | [Next: Phase 02 →](./phase-02-database.md)
 
@@ -518,22 +519,22 @@ prisma/migrations/*_migration_lock.toml
 
 ## Todo Checklist
 
-- [ ] Initialize npm project
-- [ ] Install dependencies (core + dev)
-- [ ] Create TypeScript config
-- [ ] Configure ESLint + Prettier
-- [ ] Create .env.example
-- [ ] Implement env validator (src/config/env.ts)
-- [ ] Update package.json scripts
-- [ ] Configure Husky + lint-staged
-- [ ] Create Docker Compose setup
-- [ ] Create Dockerfiles (bot + webhooks)
-- [ ] Create .gitignore
-- [ ] Copy .env.example → .env (fill real secrets)
-- [ ] Run `npm install` (verify no errors)
-- [ ] Run `npm run lint` (should pass)
-- [ ] Start PostgreSQL: `docker-compose up postgres -d`
-- [ ] Verify DB connection: `psql postgresql://postgres:postgresql@localhost:5432/docobo`
+- [x] Initialize npm project
+- [x] Install dependencies (core + dev)
+- [x] Create TypeScript config
+- [x] Configure ESLint + Prettier
+- [x] Create .env.example
+- [x] Implement env validator (src/config/env.ts)
+- [x] Update package.json scripts
+- [x] Configure Husky + lint-staged
+- [x] Create Docker Compose setup
+- [x] Create Dockerfiles (bot + webhooks)
+- [x] Create .gitignore
+- [x] Copy .env.example → .env (fill real secrets)
+- [x] Run `npm install` (verify no errors)
+- [x] Run `npm run lint` (should pass)
+- [x] Start PostgreSQL: `docker-compose up postgres -d`
+- [x] Verify DB connection: `psql postgresql://postgres:postgresql@localhost:5432/docobo`
 
 ---
 

@@ -1,10 +1,11 @@
 # Docobo Codebase Summary
 
-**Generated**: 2025-11-13
+**Generated**: 2025-12-02
+**Last Updated**: Phase 03 - Bot Core Implementation
 **Source**: repomix-output.xml
-**Total Files**: 325 files
-**Total Tokens**: 909,720 tokens
-**Total Characters**: 3,345,765 chars
+**Total Files**: 325+ files
+**Total Tokens**: ~950,000 tokens (estimated)
+**Total Characters**: ~3,500,000 chars (estimated)
 
 ---
 
@@ -58,22 +59,23 @@ docobo/
 
 ### Entry Points
 
-#### `src/index.ts` (45 lines)
-**Purpose**: Discord bot initialization and connection
+#### `src/index.ts` (43 lines)
+**Purpose**: Discord bot initialization and orchestration
 **Key Features**:
-- Discord.js client initialization with required intents
-- Database connection testing
-- Auto-guild registration on join
-- Event handlers: `ClientReady`, `GuildCreate`
+- Discord.js client initialization
+- Event handler registration (ready, guildCreate, interactionCreate)
+- Slash command registration and deployment
+- Graceful shutdown (Discord gateway + database)
 
-**Intents Used**:
-- `Guilds`: Server information
-- `GuildMembers`: Member role management
+**Event Handlers**:
+- `handleReady`: Database connectivity check, bot presence
+- `handleGuildCreate`: Auto-upsert guild on join
+- `handleInteractionCreate`: Dispatcher for all interaction types
 
-**Database Integration**:
-- Prisma client connection test on ready
-- Auto-upsert guild on join
-- Graceful shutdown handling
+**Shutdown Logic**:
+- SIGINT/SIGTERM handlers
+- Graceful Discord gateway disconnect
+- Database connection cleanup
 
 ---
 
@@ -115,6 +117,187 @@ docobo/
 - `NODE_ENV`: Enum (development, production, test)
 
 **Validation**: Fails fast on startup with detailed error messages
+
+---
+
+### Bot Core (Phase 03)
+
+#### `src/bot/client.ts` (42 lines)
+**Purpose**: Discord.js client and REST API configuration
+**Exports**:
+- `client`: Gateway-based Discord client with intents
+- `rest`: REST API client for command registration
+- `registerCommands()`: Deploy slash commands globally or guild-specific
+
+**Intents Used**:
+- `Guilds`: Server metadata
+- `GuildMembers`: Role management capability
+- `GuildMessages`: Message content access
+
+**Command Registration**:
+- Development: Guild-specific (instant, for testing)
+- Production: Global (1-hour cache)
+
+---
+
+#### `src/bot/events/ready.ts` (28 lines)
+**Purpose**: Client ready event handler
+**Functionality**:
+- Log successful bot connection
+- Display guild count
+- Test database connectivity
+- Set bot presence (`/help for commands`)
+- Exit on database connection failure
+
+---
+
+#### `src/bot/events/guildCreate.ts` (15 lines, referenced)
+**Purpose**: Auto-register guild on bot join
+**Functionality**:
+- Upsert guild to database
+- Initialize guild configuration
+
+---
+
+#### `src/bot/events/interactionCreate.ts` (47 lines)
+**Purpose**: Central interaction dispatcher
+**Interaction Types Handled**:
+- Chat input commands (slash commands)
+- Button clicks
+- String select menus
+- Modal submissions
+
+**Error Handling**:
+- Try-catch wrapping all handlers
+- Graceful error responses (ephemeral)
+- Logs interaction errors to console
+
+**Features**:
+- Deferred replies support
+- Ephemeral error messages
+- Handles replied/deferred state
+
+---
+
+#### `src/bot/commands/index.ts` (34 lines)
+**Purpose**: Slash command registry and dispatcher
+**Exports**:
+- `Command` interface (data + execute)
+- `commands` collection (Discord.js Collection)
+- `handleSlashCommand()` dispatcher
+- `commandData` (JSON export for registration)
+
+**Command List**:
+- `setup`: Admin server configuration
+- `join`: Member role purchase
+- `help`: Help/documentation
+
+**Dispatcher Features**:
+- Case-sensitive command lookup
+- Unknown command handling
+- Ephemeral error replies
+
+---
+
+#### `src/bot/commands/admin/setup.ts` (71 lines)
+**Purpose**: Admin server setup command
+**Permission**: Requires `MANAGE_GUILD`
+**Functionality**:
+- Guild upsert (create if new)
+- Bot permission validation (`MANAGE_ROLES`)
+- Display current configuration status
+- Fetch existing paid roles
+
+**Embed Output**:
+- Docobo Blue color (0x4a90e2)
+- Welcome message
+- Setup progress (Step 1/3)
+- Current status (roles, Polar, SePay)
+
+**Note**: Interactive buttons added in Phase 05
+
+---
+
+#### `src/bot/commands/member/join.ts` (61 lines)
+**Purpose**: Member role purchase interface
+**Functionality**:
+- Fetch guild configuration
+- List active paid roles
+- Display pricing and descriptions
+- Handle non-configured servers
+
+**Embed Output**:
+- Role name, price, currency, description
+- Footer: "Click a role below to purchase"
+- Timestamp for context
+
+**Note**: Select menu interaction added in Phase 05
+
+---
+
+#### `src/bot/commands/utils/help.ts` (referenced)
+**Purpose**: Help/command documentation
+**Status**: Placeholder for Phase 03
+
+---
+
+#### `src/bot/interactions/buttons.ts` (35 lines)
+**Purpose**: Button interaction handler registry
+**Pattern**:
+- Handler map indexed by customId prefix
+- Registration function for extensibility
+- Extracted prefix from customId (e.g., `confirm_payment_123` -> `confirm_payment`)
+
+**Error Handling**:
+- Unknown button logging
+- Ephemeral "no longer active" message
+
+**Status**: Handlers populated in Phase 05 (onboarding flow)
+
+---
+
+#### `src/bot/interactions/selectMenus.ts` (referenced)
+**Purpose**: Select menu interaction handler
+**Pattern**: Similar registry pattern to buttons
+**Status**: Handlers populated in Phase 05
+
+---
+
+#### `src/bot/interactions/modals.ts` (referenced)
+**Purpose**: Modal submission handler
+**Pattern**: Similar registry pattern to buttons/menus
+**Status**: Handlers populated in Phase 05
+
+---
+
+#### `src/bot/utils/roles.ts` (71 lines)
+**Purpose**: Role management utilities
+**Functions**:
+
+**`grantRole()`**:
+- Fetch member and role
+- Check existence before granting
+- Add role to member
+- Return success status
+
+**`revokeRole()`**:
+- Fetch member and role
+- Check existence before revoking
+- Remove role from member
+- Return success status
+
+**`checkBotRolePosition()`**:
+- Validate role hierarchy
+- Ensure bot can manage target role
+
+**`canManageRoles()`**:
+- Verify bot has ManageRoles permission
+- Return capability status
+
+**Error Handling**:
+- Idempotent operations (no error if already granted/revoked)
+- Logging for all operations
+- Return false on failure
 
 ---
 
@@ -243,27 +426,42 @@ docobo/
 
 ## Implementation Status
 
-### Completed (MVP Phase 1)
+### Completed (MVP Phase 1-3)
 
-**Environment Setup**:
+**Environment Setup** (Phase 1):
 - [x] TypeScript project configuration
 - [x] ESLint + Prettier + Husky setup
 - [x] Docker Compose (bot + webhooks + postgres)
 - [x] Environment validation (Zod)
 
-**Database**:
+**Database** (Phase 2):
 - [x] Prisma schema (5 models)
 - [x] Initial migration (`20251113110148_init`)
 - [x] Database service with singleton pattern
 - [x] Indexes on foreign keys and status fields
 
-**Bot Core**:
-- [x] Discord.js client initialization
-- [x] Gateway connection with intents
+**Bot Core** (Phase 3):
+- [x] Discord.js client initialization (Discord.js v14)
+- [x] Gateway connection with intents (Guilds, GuildMembers, GuildMessages)
+- [x] REST API client for command registration
+- [x] Slash command registration (guild-specific dev, global prod)
 - [x] Auto-guild registration
 - [x] Database connection test
+- [x] Client ready event handler
+- [x] Guild create event handler
+- [x] Interaction create event handler (all types)
+- [x] Slash command dispatcher
+- [x] `/setup` command (admin onboarding)
+- [x] `/join` command (member payment flow)
+- [x] `/help` command (placeholder)
+- [x] Button interaction handler (extensible registry)
+- [x] Select menu interaction handler (extensible registry)
+- [x] Modal interaction handler (extensible registry)
+- [x] Role management utilities (grant, revoke, permissions)
+- [x] Error handling for interactions
+- [x] Bot presence/status setting
 
-**Webhook Server**:
+**Webhook Server** (Phase 2):
 - [x] Fastify server setup
 - [x] Security middleware (Helmet, CORS, Rate Limit)
 - [x] Health check endpoint
@@ -271,15 +469,7 @@ docobo/
 
 ---
 
-### Pending (MVP Phase 2-6)
-
-**Bot Features** (Phase 3):
-- [ ] Slash command registration
-- [ ] `/setup` command (admin onboarding)
-- [ ] `/join` command (member payment flow)
-- [ ] `/help` command
-- [ ] Event handlers (interactions, errors)
-- [ ] Role management utilities
+### Pending (MVP Phase 4-6)
 
 **Payment Webhooks** (Phase 4):
 - [ ] Polar webhook signature verification
@@ -610,23 +800,27 @@ docobo/
 
 ### Immediate (Current Sprint)
 
-1. **Implement Bot Commands** (Phase 3):
-   - Create command loader
-   - Implement `/setup` command
-   - Implement `/join` command
-   - Add permission checks
-
-2. **Implement Webhook Handlers** (Phase 4):
-   - Add Polar signature verification
+1. **Implement Payment Webhooks** (Phase 4):
+   - Add Polar webhook signature verification (HMAC-SHA256)
    - Add SePay OAuth2 verification
-   - Implement deduplication
-   - Add role management logic
+   - Implement event deduplication (externalEventId)
+   - Implement subscription status updates
+   - Implement role grant/revoke automation
+   - Add error handling and retry logic
 
-3. **Add Testing** (Phase 6):
-   - Set up Jest
-   - Write unit tests for services
+2. **Implement Onboarding UX** (Phase 5):
+   - Progressive disclosure flow (3 steps)
+   - Interactive components (select menus, modals, buttons)
+   - Setup state persistence
+   - Embed builders with design system
+
+3. **Add Testing & CI/CD** (Phase 6):
+   - Set up Jest test framework
+   - Write unit tests for services and utilities
    - Add integration tests for webhooks
-   - Achieve 80% coverage
+   - Implement E2E tests (payment flow)
+   - Setup GitHub Actions CI pipeline
+   - Achieve 80%+ code coverage
 
 ---
 
@@ -660,4 +854,4 @@ docobo/
 
 **Generated by**: Docs Manager Agent
 **Repomix Version**: 1.8.0
-**Last Updated**: 2025-11-13
+**Last Updated**: 2025-12-02 (Phase 03 - Bot Core Complete)

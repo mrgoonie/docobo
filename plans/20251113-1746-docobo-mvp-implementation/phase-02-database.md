@@ -1,6 +1,7 @@
 # Phase 02: Database Schema Design
 
-**Date**: 2025-11-13 | **Priority**: HIGH | **Status**: PENDING
+**Date**: 2025-11-13 | **Priority**: HIGH | **Status**: COMPLETED
+**Completed**: 2025-12-02
 
 [← Phase 01](./phase-01-setup.md) | [Back to Plan](./plan.md) | [Next: Phase 03 →](./phase-03-bot-core.md)
 
@@ -537,16 +538,16 @@ npm run db:studio
 
 ## Todo Checklist
 
-- [ ] Create `prisma/schema.prisma` with full schema
-- [ ] Run `npx prisma generate` (generates client types)
-- [ ] Run `npx prisma migrate dev --name init`
-- [ ] Create `prisma/seed.ts` script
-- [ ] Add seed script to package.json
-- [ ] Create `src/services/database.ts` (connection + helpers)
-- [ ] Seed test data: `npm run db:seed`
-- [ ] Verify in Prisma Studio: `npm run db:studio`
-- [ ] Test query: fetch guild by Discord ID
-- [ ] Verify indexes created (check migration SQL)
+- [x] Create `prisma/schema.prisma` with full schema
+- [x] Run `npx prisma generate` (generates client types)
+- [x] Run `npx prisma migrate dev --name init`
+- [x] Create `prisma/seed.ts` script
+- [x] Add seed script to package.json
+- [x] Create `src/services/database.ts` (connection + helpers)
+- [x] Seed test data: `npm run db:seed`
+- [x] Verify in Prisma Studio: `npm run db:studio`
+- [x] Test query: fetch guild by Discord ID
+- [x] Verify indexes created (check migration SQL)
 
 ---
 

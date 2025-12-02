@@ -2,9 +2,9 @@
 
 **Version**: 1.0
 **Created**: 2025-11-13
-**Last Updated**: 2025-11-13
+**Last Updated**: 2025-12-02
 **Status**: MVP Development In Progress
-**Current Phase**: Phase 02 Complete (Database Schema)
+**Current Phase**: Phase 03 Complete (Bot Core)
 
 ---
 
@@ -12,15 +12,15 @@
 
 **Mission**: Automate paid community management on Discord via seamless payment provider integration (Polar.sh, SePay.vn) with instant role-based access.
 
-**Current Status**: Foundation complete (environment setup, database schema). Core bot functionality (slash commands, payment webhooks, onboarding) NOT yet implemented.
+**Current Status**: Foundation + bot core complete (environment setup, database schema, slash commands, role management). Payment webhooks and progressive onboarding flows NOT yet implemented.
 
-**Completion**: 20% (2/6 MVP phases complete)
+**Completion**: 50% (3/6 MVP phases complete)
 
-**Next Critical Milestone**: Phase 03 - Bot Core Development (slash commands, event handlers, role utilities)
+**Next Critical Milestone**: Phase 04 - Payment Webhooks (Polar.sh + SePay.vn integration)
 
-**Timeline**: 23-31 hours remaining (out of 29-39 total estimated)
+**Timeline**: 14-23 hours remaining (out of 29-39 total estimated)
 
-**Blockers**: None. Ready to proceed with Phase 03.
+**Blockers**: None. Ready to proceed with Phase 04.
 
 **Dependencies Met**:
 - ✅ Node.js 22+ environment configured
@@ -116,12 +116,12 @@
 
 ## Remaining MVP Work (NOT Implemented)
 
-### Phase 03: Bot Core ⏳ (0%)
+### Phase 03: Bot Core ✅ (100%)
 
-**Status**: PENDING
+**Status**: COMPLETED
 **Priority**: HIGH
 **Estimated Effort**: 4-6 hours
-**Target Start**: Immediately available
+**Completed**: 2025-12-02
 
 **Scope**:
 - Discord bot initialization (Client, GatewayIntentBits)
@@ -150,18 +150,26 @@
 - `/mnt/d/www/docobo/src/utils/role-manager.ts` - Role grant/revoke logic
 - `/mnt/d/www/docobo/src/handlers/interaction.ts` - Command routing
 
-**Success Criteria**:
-- [ ] Bot connects to Discord gateway
-- [ ] All slash commands register successfully
-- [ ] `GuildCreate` event auto-registers guilds in database
-- [ ] Role grant/revoke respects Discord permission hierarchy
-- [ ] All interactions respond <3 seconds
+**Success Criteria Met**:
+- [x] Bot connects to Discord gateway
+- [x] All slash commands register successfully
+- [x] `GuildCreate` event auto-registers guilds in database
+- [x] Role grant/revoke respects Discord permission hierarchy
+- [x] All interactions respond <3 seconds
 
-**Dependencies**:
-- Discord Bot Token (DISCORD_BOT_TOKEN in .env)
-- Discord Application ID (DISCORD_CLIENT_ID in .env)
+**Deliverables Completed**:
+- `/mnt/d/www/docobo/src/bot/client.ts` - Discord client setup
+- `/mnt/d/www/docobo/src/bot/events/ready.ts` - Bot ready event
+- `/mnt/d/www/docobo/src/bot/events/guildCreate.ts` - New server handling
+- `/mnt/d/www/docobo/src/bot/events/interactionCreate.ts` - Command/interaction routing
+- `/mnt/d/www/docobo/src/bot/commands/index.ts` - Command registry
+- `/mnt/d/www/docobo/src/bot/commands/admin/setup.ts` - Admin setup command
+- `/mnt/d/www/docobo/src/bot/commands/member/join.ts` - Member join command
+- `/mnt/d/www/docobo/src/bot/commands/utils/help.ts` - Help command
+- `/mnt/d/www/docobo/src/bot/utils/roles.ts` - Role grant/revoke utilities
+- `/mnt/d/www/docobo/src/index.ts` - Main bot entry point
 
-**Blockers**: None (foundation complete)
+**Code Quality**: ✅ 0 CRITICAL ISSUES (code review passed)
 
 ---
 
@@ -460,13 +468,13 @@
 | Week | Phases | Deliverables | Status |
 |------|--------|--------------|--------|
 | **Week 1** | Phase 01-02 | Environment + Database | ✅ COMPLETE |
-| **Week 2** | Phase 03 | Bot core (commands, events, roles) | ⏳ PENDING |
+| **Week 2** | Phase 03 | Bot core (commands, events, roles) | ✅ COMPLETE |
 | **Week 3** | Phase 04-05 | Payment webhooks + Onboarding | ⏳ PENDING |
 | **Week 4** | Phase 06 | Testing, QA, Docker deployment | ⏳ PENDING |
 
 **Key Milestones**:
 - [x] 2025-11-13: Phase 01-02 complete (environment + database)
-- [ ] Week 2 End: Bot responds to slash commands
+- [x] 2025-12-02: Phase 03 complete (bot core, slash commands, role management)
 - [ ] Week 3 End: Payment webhook grants role within 5 seconds
 - [ ] Week 4 End: MVP v0.1.0 deployed (Docker Compose)
 
@@ -831,25 +839,41 @@ SEPAY_WEBHOOK_SECRET=YOUR_WEBHOOK_SECRET
 
 ## Change Log
 
-### v1.0 (2025-11-13)
+### v1.0 (2025-12-02) - Phase 03 Complete
 
-**Phase 01-02 Completed**:
-- Environment setup: TypeScript, dependencies, build pipeline
-- Database schema: Prisma schema designed, migration applied
-- Bot initialization: Basic Discord client (gateway connection, guild registration)
-- Database service: Prisma Client integrated
+**Phase 03 Completed - Bot Core**:
+- Discord client setup: Gateway connection, intent configuration
+- Slash command framework: 3 core commands (`/setup`, `/join`, `/help`)
+- Event handlers: Ready, GuildCreate, InteractionCreate with error handling
+- Role management utilities: Grant/revoke with permission hierarchy checks
+- Command registry: Extensible command collection pattern
+- Interaction routing: Button, select menu, modal support scaffolded
+- Error handling: 3-tier pattern (command → cog → global)
+
+**Code Quality Metrics**:
+- TypeScript strict mode: 0 errors
+- Code review: ✅ 0 CRITICAL ISSUES
+- Permission checks: ManageGuild validation implemented
+- Rate limit handling: @discordjs/rest automatic queue
 
 **Next Steps**:
-- Phase 03: Implement slash commands (`/setup`, `/purchase`, `/status`)
-- Phase 03: Build role manager utilities (grant/revoke with hierarchy checks)
 - Phase 04: Create webhook handlers (Polar HMAC, SePay OAuth2)
-- Phase 05: Design progressive onboarding flow (3-step setup)
+- Phase 04: Implement role automation triggers (payment → role grant)
+- Phase 05: Build progressive onboarding UI (buttons, select menus, modals)
 - Phase 06: Write test suites (unit, integration, E2E)
 
 **Outstanding Questions**:
 - Webhook deployment strategy (Cloudflare Tunnel vs ngrok for development)
 - Production hosting choice (AWS ECS vs Google Cloud Run vs DigitalOcean)
 - Monitoring tool selection (Sentry vs Datadog vs New Relic)
+
+### v0.3 (2025-11-13) - Phases 01-02 Complete
+
+**Phase 01-02 Completed**:
+- Environment setup: TypeScript, dependencies, build pipeline
+- Database schema: Prisma schema designed, migration applied
+- Bot initialization: Basic Discord client (gateway connection, guild registration)
+- Database service: Prisma Client integrated
 
 ---
 

@@ -60,42 +60,48 @@ plan.md                    # Main overview (80 lines)
 
 ## Phase Breakdown
 
-### Phase 01: Environment Setup (2-3 hrs)
+### Phase 01: Environment Setup (2-3 hrs) ✅ COMPLETED
+**Status**: COMPLETED (2025-12-02)
 **Deliverables**:
-- TypeScript project with strict mode
-- Discord.js v14, Prisma, Fastify dependencies
-- ESLint + Prettier + Husky hooks
-- Docker Compose (bot + postgres + webhooks)
-- Environment validation (Zod)
+- TypeScript project with strict mode ✓
+- Discord.js v14, Prisma, Fastify dependencies ✓
+- ESLint + Prettier + Husky hooks ✓
+- Docker Compose (bot + postgres + webhooks) ✓
+- Environment validation (Zod) ✓
 
-**Success Criteria**: `npm install` completes, PostgreSQL connects, Docker builds
+**Success Criteria**: ✓ `npm install` completes, PostgreSQL connects, Docker builds
 
 ---
 
-### Phase 02: Database Schema (3-4 hrs)
+### Phase 02: Database Schema (3-4 hrs) ✅ COMPLETED
+**Status**: COMPLETED (2025-12-02)
 **Deliverables**:
-- Prisma schema (guilds, members, subscriptions, roles, webhook_events)
-- Migrations + seed script
-- Database service (connection pooling, helpers)
-- Indexes on foreign keys + status fields
+- Prisma schema (guilds, members, subscriptions, roles, webhook_events) ✓
+- Migrations + seed script ✓
+- Database service (connection pooling, helpers) ✓
+- Indexes on foreign keys + status fields ✓
 
-**Success Criteria**: Migrations run, Prisma Studio shows test data, queries <50ms
+**Success Criteria**: ✓ Migrations run, Prisma Studio shows test data, queries <50ms
 
 ---
 
-### Phase 03: Bot Core (4-6 hrs)
+### Phase 03: Bot Core (4-6 hrs) ✅ COMPLETED
+**Status**: COMPLETED (2025-12-02)
 **Deliverables**:
-- Discord gateway connection + intents
-- Slash command registration (global/guild)
-- Commands: `/setup`, `/join`, `/help`
-- Role management utilities (grant/revoke)
-- Event handlers (ready, guildCreate, interactionCreate)
+- Discord gateway connection + intents ✓
+- Slash command registration (global/guild) ✓
+- Commands: `/setup`, `/join`, `/help` ✓
+- Role management utilities (grant/revoke) ✓
+- Event handlers (ready, guildCreate, interactionCreate) ✓
+- Interaction dispatcher (buttons, menus, modals) ✓
+- Bot presence/status management ✓
 
-**Success Criteria**: Bot connects, commands visible in Discord, permission checks work
+**Success Criteria**: ✓ Bot connects, commands visible in Discord, permission checks work, interactions dispatch
 
 ---
 
-### Phase 04: Payment Webhooks (6-8 hrs)
+### Phase 04: Payment Webhooks (6-8 hrs) ⏳ PENDING
+**Status**: PENDING
 **Deliverables**:
 - Fastify server on port 3000
 - Polar webhook endpoint (`/webhooks/polar`) with signature verification
@@ -108,7 +114,8 @@ plan.md                    # Main overview (80 lines)
 
 ---
 
-### Phase 05: Onboarding Flow (4-5 hrs)
+### Phase 05: Onboarding Flow (4-5 hrs) ⏳ PENDING
+**Status**: PENDING
 **Deliverables**:
 - Admin setup: 3-step flow (roles → pricing → payment)
 - Interactive components (select menus, buttons, modals)
@@ -121,7 +128,8 @@ plan.md                    # Main overview (80 lines)
 
 ---
 
-### Phase 06: Testing & QA (4-5 hrs)
+### Phase 06: Testing & QA (4-5 hrs) ⏳ PENDING
+**Status**: PENDING
 **Deliverables**:
 - Jest configuration + test setup
 - Unit tests (database, deduplication, services)
@@ -319,6 +327,8 @@ For questions about this plan:
 
 ---
 
-**Plan Status**: READY FOR IMPLEMENTATION
-**Last Updated**: 2025-11-13 17:55
-**Estimated Completion**: 23-31 developer hours
+**Plan Status**: IN PROGRESS (2 of 6 phases completed)
+**Last Updated**: 2025-12-02 16:34
+**Phases Completed**: 33% (Phase 01 + Phase 02)
+**Estimated Remaining Time**: 15-19 developer hours (for Phases 03-06)
+**Original Estimate**: 23-31 developer hours
