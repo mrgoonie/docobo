@@ -1,10 +1,16 @@
-import { ChatInputCommandInteraction, Collection, SlashCommandBuilder } from 'discord.js';
+import {
+  ChatInputCommandInteraction,
+  Collection,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from 'discord.js';
 import { setupCommand } from './admin/setup.js';
 import { joinCommand } from './member/join.js';
 import { helpCommand } from './utils/help.js';
+import { kbCommand } from './ai/kb.js';
 
 export interface Command {
-  data: SlashCommandBuilder;
+  data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 
@@ -14,6 +20,7 @@ export const commands = new Collection<string, Command>();
 commands.set(setupCommand.data.name, setupCommand);
 commands.set(joinCommand.data.name, joinCommand);
 commands.set(helpCommand.data.name, helpCommand);
+commands.set(kbCommand.data.name, kbCommand);
 
 export async function handleSlashCommand(interaction: ChatInputCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);

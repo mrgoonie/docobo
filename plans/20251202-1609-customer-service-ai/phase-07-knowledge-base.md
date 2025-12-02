@@ -2,7 +2,10 @@
 
 **Parent**: [Customer Service AI Plan](./plan.md)
 **Dependencies**: Phase 02 (Database), Phase 03 (Bot Core)
-**Date**: 2025-12-02 | **Priority**: HIGH | **Status**: PENDING
+**Date**: 2025-12-02 | **Priority**: HIGH | **Status**: DONE (2025-12-03)
+
+**Code Review**: [Phase 07 Review Report](./reports/code-reviewer-251202-phase-07-kb-review.md)
+**Review Status**: ✅ COMPLETED - All issues resolved
 
 ---
 
@@ -177,30 +180,30 @@ export async function generateDocument(content: string, config: OpenRouterConfig
 
 ## Todo List
 
-- [ ] Add KnowledgeDocument model to Prisma schema
-- [ ] Run database migration
-- [ ] Add FTS index via raw SQL
-- [ ] Create OpenRouter service with retry logic
-- [ ] Implement URL processor with llms.txt support
-- [ ] Create knowledge-base service (CRUD)
-- [ ] Implement /kb add command
-- [ ] Implement /kb list command
-- [ ] Implement /kb remove command
-- [ ] Implement /kb update command
-- [ ] Implement /kb search command
-- [ ] Add permission checks
-- [ ] Write unit tests for services
-- [ ] Write integration tests for commands
+- [x] Add KnowledgeDocument model to Prisma schema
+- [x] Run database migration
+- [x] Add FTS index via raw SQL
+- [x] Create OpenRouter service with retry logic
+- [x] Implement URL processor with llms.txt support
+- [x] Create knowledge-base service (CRUD)
+- [x] Implement /kb add command
+- [x] Implement /kb list command
+- [x] Implement /kb remove command
+- [x] Implement /kb update command
+- [x] Implement /kb search command
+- [x] Add permission checks
+- [x] Write unit tests for services
+- [x] Write integration tests for commands
 
 ---
 
 ## Success Criteria
 
-- [ ] `/kb add https://example.com` generates structured doc
-- [ ] YAML frontmatter includes title, description, category
-- [ ] FTS search returns relevant docs in <50ms
-- [ ] Admin-only access enforced
-- [ ] LLM errors handled gracefully with user feedback
+- [x] `/kb add https://example.com` generates structured doc
+- [x] YAML frontmatter includes title, description, category
+- [x] FTS search returns relevant docs in <50ms
+- [x] Admin-only access enforced
+- [x] LLM errors handled gracefully with user feedback
 
 ---
 

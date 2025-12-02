@@ -38,6 +38,7 @@ afterEach(async () => {
   await testPrisma.subscription.deleteMany();
   await testPrisma.member.deleteMany();
   await testPrisma.paidRole.deleteMany();
+  await testPrisma.knowledgeDocument.deleteMany();
   await testPrisma.guild.deleteMany();
 });
 

@@ -29,6 +29,7 @@ model Guild {
   // Relationships
   members       Member[]
   roles         PaidRole[]
+  knowledgeDocs KnowledgeDocument[]
 
   // Metadata
   createdAt     DateTime @default(now())
@@ -207,4 +208,28 @@ model WebhookEvent {
   @@index([processed])
   @@index([eventType])
   @@map("webhook_events")
+}
+
+// ============================================================
+// KNOWLEDGE BASE (Customer Service AI)
+// ============================================================
+model KnowledgeDocument {
+  id          String   @id @default(cuid())
+  guildId     String
+  guild       Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  title       String   @db.VarChar(255)
+  description String   @db.Text  // SEO-like for semantic search
+  content     String   @db.Text
+  sourceUrl   String?  @db.VarChar(2048)
+
+  // JSONB for flexible metadata
+  metadata    Json?    @db.JsonB  // {author, category, tags[], references[], word_count}
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("knowledge_documents")
 }

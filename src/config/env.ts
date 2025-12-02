@@ -15,6 +15,8 @@ const envSchema = z.object({
   SEPAY_WEBHOOK_SECRET: z.string().min(1, 'SePay webhook secret required'),
   WEBHOOK_PORT: z.string().default('3000'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  // Customer Service AI
+  OPENROUTER_API_KEY: z.string().optional(), // Optional for MVP - required when using /kb add
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -1,7 +1,7 @@
 # Docobo Codebase Summary
 
-**Generated**: 2025-12-02
-**Last Updated**: Phase 04 - Payment Webhooks Completion
+**Generated**: 2025-12-03
+**Last Updated**: Phase 07 - Knowledge Base Management Completion
 **Source**: repomix-output.xml
 **Total Files**: 325+ files
 **Total Tokens**: ~950,000 tokens (estimated)
@@ -112,7 +112,7 @@ docobo/
 
 ### Configuration
 
-#### `src/config/env.ts` (35 lines)
+#### `src/config/env.ts` (37 lines)
 **Purpose**: Environment variable validation using Zod
 **Validated Variables**:
 - `DISCORD_BOT_TOKEN`: Required, string
@@ -126,6 +126,7 @@ docobo/
 - `SEPAY_WEBHOOK_SECRET`: Required
 - `WEBHOOK_PORT`: Default 3000
 - `NODE_ENV`: Enum (development, production, test)
+- `OPENROUTER_API_KEY`: Optional, required when using `/kb add` command
 
 **Validation**: Fails fast on startup with detailed error messages
 
@@ -252,7 +253,7 @@ docobo/
 
 ---
 
-#### `src/bot/interactions/buttons.ts` (35 lines)
+#### `src/bot/interactions/buttons.ts` (referenced - MODIFIED in Phase 07)
 **Purpose**: Button interaction handler registry
 **Pattern**:
 - Handler map indexed by customId prefix
@@ -263,7 +264,13 @@ docobo/
 - Unknown button logging
 - Ephemeral "no longer active" message
 
-**Status**: Handlers populated in Phase 05 (onboarding flow)
+**Registered Handlers**:
+- Setup flow: resume, restart, pricing, back, complete
+- Payment: polar, sepay, both
+- Role purchase: purchase_role
+- Knowledge base: kb_list (pagination), kb_delete (document removal)
+
+**Status**: Handlers populated in Phase 05 (onboarding flow) + Phase 07 (KB handlers)
 
 ---
 
@@ -570,11 +577,167 @@ docobo/
 
 ---
 
+### Knowledge Base Management (Phase 07)
+
+#### `src/services/openrouter.ts` (179 lines)
+**Purpose**: LLM-powered document generation via OpenRouter API
+**Key Features**:
+- Uses Google Gemini 2.5 Flash as default model
+- Retry mechanism with exponential backoff (3 attempts)
+- YAML frontmatter parsing from generated markdown
+- API key validation
+- Timeout and error handling
+
+**`generateDocument(content, config)`**:
+- Send content to OpenRouter for processing
+- Extract metadata from YAML frontmatter (title, description, category, tags)
+- Return structured `GeneratedDocument` with content and metadata
+- Retry on failure with exponential backoff (1s, 2s, 4s)
+- Log token usage for cost tracking
+
+**`validateApiKey(apiKey)`**:
+- Verify OpenRouter API key validity
+- Return boolean result
+- Used before attempting document generation
+
+**Prompt Engineering**:
+- Generates documents with structured frontmatter format
+- Extracts categories (guide, reference, tutorial, faq, policy, general)
+- Generates 3-7 semantic tags for searchability
+- Removes noise (ads, navigation, scripts)
+- Output: Clean markdown with metadata
+
+---
+
+#### `src/services/url-processor.ts` (224 lines)
+**Purpose**: Safe URL fetching with llms.txt protocol support
+**Security Features**:
+- Blocks private/internal IP addresses (RFC 1918, IPv6 unique local)
+- Blocks localhost and cloud metadata endpoints (AWS, GCP)
+- URL validation (http/https only)
+- Timeout protection (10 seconds fetch, 5 seconds llms.txt)
+- User-Agent headers with Docobo identification
+
+**`processUrl(url)`**:
+- Validate URL safety (no internal IPs)
+- Try fetching `llms.txt` first (AI-optimized content)
+- Fall back to regular URL fetch if llms.txt unavailable
+- Strip HTML tags and clean content
+- Truncate to 10K chars for LLM context
+- Return processed content with metadata
+
+**`stripHtml(html)`**:
+- Remove script and style tags
+- Remove nav, header, footer, aside elements
+- Decode HTML entities (nbsp, amp, lt, gt, quot)
+- Clean up extra whitespace
+- Return plain text
+
+**`processText(text)`**:
+- Trim and clean plain text input
+- Truncate to 10K chars
+- For non-URL document creation
+
+**Safety Validations**:
+- Blocks: 127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12, 169.254.0.0/16, IPv6 loopback/link-local
+- Blocks cloud metadata: AWS (169.254.169.254), GCP (metadata.google.internal)
+
+---
+
+#### `src/services/knowledge-base.ts` (183 lines)
+**Purpose**: CRUD operations and full-text search for knowledge documents
+**Key Functions**:
+
+**`createDocument(input)`**:
+- Create new knowledge document in guild
+- Accepts: guildId, title, description, content, sourceUrl, metadata
+- Upsert guild if not exists
+- Return created document
+- Log operation with document ID
+
+**`getDocument(id)`**:
+- Fetch single document by ID
+- Return document or null if not found
+
+**`listDocuments(guildId, page)`**:
+- Paginate documents for guild (10 per page)
+- Order by creation date (newest first)
+- Return documents array, total count, page count
+- Support pagination
+
+**`updateDocument(id, input)`**:
+- Partial update of document fields
+- Only update provided fields (title, description, content, metadata)
+- Return updated document
+- Log operation with document ID
+
+**`deleteDocument(id)`**:
+- Remove document by ID
+- No soft delete - permanent removal
+- Log operation with document ID
+
+**`searchDocuments(guildId, query, limit=5)`**:
+- Full-text search using PostgreSQL ts_rank
+- Raw SQL query for ranking support
+- Filter by guild
+- Return array of KnowledgeSearchResult (id, title, description, relevance)
+- Support semantic search on title and description
+
+**Database Helpers**:
+- `ensureGuild(guildId, guildName)`: Upsert guild, return internal ID
+- `documentBelongsToGuild(docId, guildId)`: Permission check
+- `getDocumentCount(guildId)`: Get total documents for guild
+
+---
+
+#### `src/bot/commands/ai/kb.ts` (referenced - NEW)
+**Purpose**: `/kb` slash command for knowledge base management
+**Permissions**: Requires `MANAGE_GUILD` or `MANAGE_MESSAGES`
+**Subcommands**:
+
+**`/kb add <input>`**:
+- Accept URL or plain text input (max 4000 chars)
+- Validate OpenRouter API key configured
+- If URL: fetch content via url-processor
+- If text: process as raw text
+- Generate document structure via OpenRouter
+- Create document in knowledge base
+- Display confirmation with document ID
+
+**`/kb list [page]`**:
+- List all documents for guild
+- Paginate (10 per page)
+- Show title, description, creation date
+- Include pagination info
+
+**`/kb remove <id>`**:
+- Delete document by ID
+- Permission check (belongs to guild)
+- Confirmation message
+
+**`/kb search <query>`**:
+- Full-text search across knowledge base
+- Display top 5 results with relevance scores
+- Show title and description
+
+**`/kb view <id>`**:
+- Display full document content
+- Show title, description, metadata
+- Include source URL if available
+
+**Features**:
+- Deferred replies for long-running operations (add command)
+- Embed-based UI following design guidelines
+- Error handling for missing API keys
+- Permission checks
+
+---
+
 ## Database Schema
 
 ### Schema Overview (`prisma/schema.prisma`)
 
-**Total Models**: 5
+**Total Models**: 6
 
 #### 1. Guild Model
 **Purpose**: Discord server configurations
@@ -681,9 +844,30 @@ docobo/
 
 ---
 
+#### 6. KnowledgeDocument Model
+**Purpose**: AI-generated knowledge base documents for customer service
+**Fields**:
+- `id`: Internal UUID (cuid)
+- `guildId`: FK to Guild (indexed)
+- `title`: Document title (VarChar 255)
+- `description`: SEO-optimized summary for search (Text)
+- `content`: Full document markdown content (Text)
+- `sourceUrl`: Original URL source if created from URL (VarChar 2048, nullable)
+- `metadata`: JSONB for flexible metadata (category, tags, references, word_count)
+- `createdAt`: Document creation timestamp
+- `updatedAt`: Last modification timestamp
+
+**Relationships**:
+- `guild`: One-to-many from Guild
+
+**Indexes**:
+- Indexed: `guildId`
+
+---
+
 ## Implementation Status
 
-### Completed (MVP Phase 1-3)
+### Completed (MVP Phase 1-4, 7)
 
 **Environment Setup** (Phase 1):
 - [x] TypeScript project configuration
@@ -735,6 +919,23 @@ docobo/
 - [x] Reference code parsing for SePay transactions
 - [x] Replay attack prevention (5-minute timestamp window)
 - [x] Timing-safe signature comparison (prevents timing attacks)
+
+**Knowledge Base Management** (Phase 07):
+- [x] KnowledgeDocument database model with full-text search support
+- [x] OpenRouter LLM service for document generation (Gemini 2.5 Flash)
+- [x] URL fetching with llms.txt protocol support
+- [x] URL safety validation (blocks private IPs, cloud metadata)
+- [x] YAML frontmatter parsing from generated documents
+- [x] Full-text search with PostgreSQL ts_rank ranking
+- [x] CRUD operations for documents (create, read, update, delete, list)
+- [x] `/kb add` command (URL or text input with LLM processing)
+- [x] `/kb list` command (paginated document listing)
+- [x] `/kb search` command (full-text search with relevance)
+- [x] `/kb view` command (view full document content)
+- [x] `/kb remove` command (delete document)
+- [x] OpenRouter API key validation
+- [x] Retry mechanism with exponential backoff (3 attempts)
+- [x] Environment variable for optional OPENROUTER_API_KEY
 
 ---
 
@@ -962,15 +1163,30 @@ docobo/
 
 **Top Files by Size**:
 1. `docs/design-guidelines.md`: 42KB (1,547 lines)
-2. `prisma/schema.prisma`: 5.4KB (211 lines)
-3. `docs/README.md`: 14KB (579 lines)
-4. `package.json`: 1.5KB (60 lines)
+2. `prisma/schema.prisma`: 5.6KB (236 lines) - Updated with KnowledgeDocument model
+3. `docs/codebase-summary.md`: 60KB+ (updated with Phase 07)
+4. `docs/README.md`: 14KB (579 lines)
+5. `package.json`: 1.5KB (60 lines)
 
 **Code Distribution**:
-- Source code: 4 files (177 lines TypeScript)
-- Database: 1 schema + 1 migration
-- Documentation: 5 files (>3000 lines)
+- Source code: 10+ files (500+ lines TypeScript)
+  - Services: database, role-automation, knowledge-base, openrouter, url-processor
+  - Commands: setup, join, help, kb (knowledge base)
+  - Interactions: buttons, selectMenus, modals
+  - Webhooks: server, routes (polar, sepay), services, utils
+- Database: 1 schema + migrations
+- Documentation: 6 files (>4000 lines)
 - Configuration: 8 files (ESLint, Prettier, TypeScript, Docker)
+
+**Phase 07 New Files**:
+- `src/services/openrouter.ts` (179 lines) - LLM API integration
+- `src/services/url-processor.ts` (224 lines) - Safe URL fetching
+- `src/services/knowledge-base.ts` (183 lines) - CRUD + FTS search
+- `src/bot/commands/ai/kb.ts` (~150 lines) - Knowledge base command
+- `src/types/knowledge.ts` (55 lines) - Type definitions
+- `tests/unit/services/knowledge-base.test.ts` - Unit tests
+- `tests/unit/services/openrouter.test.ts` - Unit tests
+- `tests/unit/services/url-processor.test.ts` - Unit tests
 
 ---
 
@@ -1067,13 +1283,19 @@ docobo/
    - Setup state persistence
    - Embed builders with design system
 
-3. **Add Testing & CI/CD** (Phase 6):
+2. **Add Testing & CI/CD** (Phase 6):
    - Set up Jest test framework
    - Write unit tests for services and utilities
    - Add integration tests for webhooks
    - Implement E2E tests (payment flow)
    - Setup GitHub Actions CI pipeline
    - Achieve 80%+ code coverage
+
+3. **Knowledge Base Integration** (Phase 07 - COMPLETED):
+   - LLM-powered document generation from URLs/text
+   - Full-text search with semantic ranking
+   - Discord `/kb` command suite for CRUD operations
+   - Supports multiple input sources (URLs, llms.txt, raw text)
 
 ---
 
@@ -1107,4 +1329,33 @@ docobo/
 
 **Generated by**: Docs Manager Agent
 **Repomix Version**: 1.8.0
-**Last Updated**: 2025-12-02 (Phase 03 - Bot Core Complete)
+**Last Updated**: 2025-12-03 (Phase 07 - Knowledge Base Management Complete)
+
+### Phase 07 Summary
+
+Phase 07 adds customer service AI capabilities with LLM-powered document generation and full-text search. The implementation includes:
+
+**Core Services**:
+- OpenRouter LLM integration for automatic document structuring with metadata extraction
+- Safe URL fetching with llms.txt protocol support and security validations
+- PostgreSQL full-text search with semantic ranking via ts_rank
+- Complete CRUD operations with pagination support
+
+**Discord Integration**:
+- `/kb add` for uploading documents from URLs or text
+- `/kb list` for browsing knowledge base with pagination
+- `/kb search` for full-text queries with relevance ranking
+- `/kb view` for reading full document content
+- `/kb remove` for deleting documents
+
+**Safety & Quality**:
+- Private IP blocking (RFC 1918, IPv6 unique local)
+- Cloud metadata endpoint protection (AWS, GCP)
+- LLM retry with exponential backoff (1s, 2s, 4s)
+- YAML frontmatter parsing for metadata extraction
+- Optional OPENROUTER_API_KEY for graceful degradation
+
+**Database**:
+- New KnowledgeDocument model with relationships to Guild
+- Indexed guildId for fast lookups
+- JSONB metadata for flexible categorization

@@ -8,11 +8,13 @@ import {
   ButtonBuilder,
   ButtonStyle,
   PermissionFlagsBits,
+  EmbedBuilder,
 } from 'discord.js';
 import { getSetupState, updateSetupState, clearSetupState } from '../utils/setupState.js';
-import { createSetupEmbed, createSuccessEmbed } from '../utils/embeds.js';
+import { createSetupEmbed, createSuccessEmbed, createInfoEmbed, COLORS } from '../utils/embeds.js';
 import { prisma } from '../../services/database.js';
 import { Decimal } from '@prisma/client/runtime/library';
+import * as knowledgeBase from '../../services/knowledge-base.js';
 
 // Button handler registry - maps customId prefixes to handlers
 type ButtonHandler = (interaction: ButtonInteraction) => Promise<void>;
@@ -28,6 +30,10 @@ buttonHandlers.set('payment_polar', handlePaymentPolar);
 buttonHandlers.set('payment_sepay', handlePaymentSepay);
 buttonHandlers.set('payment_both', handlePaymentBoth);
 buttonHandlers.set('purchase_role', handlePurchaseRole);
+
+// Register knowledge base handlers
+buttonHandlers.set('kb_list', handleKbListPage);
+buttonHandlers.set('kb_delete', handleKbDelete);
 
 export async function handleButton(interaction: ButtonInteraction): Promise<void> {
   // Extract handler prefix from customId (e.g., 'setup_pricing_modal' -> 'setup_pricing')
@@ -501,4 +507,147 @@ async function handlePurchaseRole(interaction: ButtonInteraction): Promise<void>
       `Reference Code: \`${refCode}\``,
     components: [new ActionRowBuilder<ButtonBuilder>().addComponents(buttons)],
   });
+}
+
+// ============================================================
+// Knowledge Base Button Handlers
+// ============================================================
+
+async function handleKbListPage(interaction: ButtonInteraction): Promise<void> {
+  // Permission check - ManageGuild or ManageMessages
+  if (
+    !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild) &&
+    !interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)
+  ) {
+    await interaction.reply({
+      content: '❌ You need Manage Server or Manage Messages permission.',
+      ephemeral: true,
+    });
+    return;
+  }
+
+  await interaction.deferUpdate();
+
+  // Extract page number from customId: kb_list_2 -> 2
+  const pageStr = interaction.customId.split('_').pop();
+  const page = parseInt(pageStr || '1', 10);
+  const guildId = interaction.guildId!;
+
+  try {
+    const guild = await knowledgeBase.ensureGuild(guildId, interaction.guild!.name);
+    const { documents, total, pages } = await knowledgeBase.listDocuments(guild, page);
+
+    const embed = new EmbedBuilder()
+      .setColor(COLORS.DOCOBO_BLUE)
+      .setTitle('Knowledge Base')
+      .setDescription(`${total} document${total !== 1 ? 's' : ''} total`)
+      .setFooter({ text: `Page ${page}/${pages}` })
+      .setTimestamp();
+
+    for (const doc of documents) {
+      const metadata = doc.metadata as { category?: string } | null;
+      embed.addFields({
+        name: doc.title,
+        value:
+          `${doc.description.slice(0, 100)}${doc.description.length > 100 ? '...' : ''}\n` +
+          `ID: \`${doc.id}\` • ${metadata?.category || 'general'}`,
+      });
+    }
+
+    // Pagination buttons
+    const row = new ActionRowBuilder<ButtonBuilder>();
+
+    if (page > 1) {
+      row.addComponents(
+        new ButtonBuilder()
+          .setCustomId(`kb_list_${page - 1}`)
+          .setLabel('Previous')
+          .setStyle(ButtonStyle.Secondary)
+      );
+    }
+
+    if (page < pages) {
+      row.addComponents(
+        new ButtonBuilder()
+          .setCustomId(`kb_list_${page + 1}`)
+          .setLabel('Next')
+          .setStyle(ButtonStyle.Secondary)
+      );
+    }
+
+    await interaction.editReply({
+      embeds: [embed],
+      components: row.components.length > 0 ? [row] : [],
+    });
+  } catch (error) {
+    console.error('[KB] List page error:', error);
+    await interaction.editReply({
+      embeds: [createInfoEmbed('Error', 'Failed to load documents.')],
+      components: [],
+    });
+  }
+}
+
+async function handleKbDelete(interaction: ButtonInteraction): Promise<void> {
+  // Permission check
+  if (
+    !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild) &&
+    !interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)
+  ) {
+    await interaction.reply({
+      content: '❌ You need Manage Server or Manage Messages permission.',
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const customId = interaction.customId;
+
+  // Handle cancel
+  if (customId === 'kb_delete_cancel') {
+    await interaction.update({
+      embeds: [createInfoEmbed('Cancelled', 'Document deletion cancelled.')],
+      components: [],
+    });
+    return;
+  }
+
+  // Handle confirm: kb_delete_confirm_<docId>
+  if (customId.startsWith('kb_delete_confirm_')) {
+    const docId = customId.replace('kb_delete_confirm_', '');
+
+    await interaction.deferUpdate();
+
+    try {
+      // Verify ownership
+      const belongsToGuild = await knowledgeBase.documentBelongsToGuild(
+        docId,
+        interaction.guildId!
+      );
+      if (!belongsToGuild) {
+        await interaction.editReply({
+          embeds: [
+            createInfoEmbed('Error', 'Document not found or does not belong to this server.'),
+          ],
+          components: [],
+        });
+        return;
+      }
+
+      await knowledgeBase.deleteDocument(docId);
+
+      await interaction.editReply({
+        embeds: [
+          createSuccessEmbed('Deleted', 'Document has been removed from the knowledge base.'),
+        ],
+        components: [],
+      });
+    } catch (error) {
+      console.error('[KB] Delete error:', error);
+      await interaction.editReply({
+        embeds: [createInfoEmbed('Error', 'Failed to delete document.')],
+        components: [],
+      });
+    }
+  }
 }
