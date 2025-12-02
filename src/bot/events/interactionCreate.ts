@@ -16,8 +16,8 @@ export function handleInteractionCreate(client: Client): void {
         else if (interaction.isButton()) {
           await handleButton(interaction);
         }
-        // Select menu selection
-        else if (interaction.isStringSelectMenu()) {
+        // Select menu selection (string or role)
+        else if (interaction.isAnySelectMenu()) {
           await handleSelectMenu(interaction);
         }
         // Modal submission
